@@ -83,16 +83,19 @@ message(STATUS "\tC++ Compiler Path:      ${CMAKE_CXX_COMPILER}")
 message(STATUS)
 
 if(MSVC)
-  message(STATUS "\tMSVC Version: ${MSVC_VERSION}")
-  message(STATUS "\tMSVC Toolset: ${MSVC_TOOLSET_VERSION}")
+    message(STATUS "\tMSVC Version: ${MSVC_VERSION}")
+    message(STATUS "\tMSVC Toolset: ${MSVC_TOOLSET_VERSION}")
+    message(STATUS)
 endif()
 
 if(CMAKE_GENERATOR MATCHES "Xcode")
-  message(STATUS "\tXcode Version: ${XCODE_VERSION}")
+    message(STATUS "\tXcode Version: ${XCODE_VERSION}")
+    message(STATUS)
 endif()
 
 if(CMAKE_SYSTEM_NAME MATCHES "Darwin")
-  message(STATUS "\tMacOS SDK: ${CMAKE_OSX_SYSROOT}")
+    message(STATUS "\tMacOS SDK: ${CMAKE_OSX_SYSROOT}")
+    message(STATUS)
 endif()
 
 
