@@ -9,6 +9,14 @@
 #include <iostream>
 #include <vector>
 
+static SDL_Rect viewport = {
+    0,   // x
+    0,   // y
+    800, // width
+    600, // height
+};
+static float orthoFov = 1.0f;
+
 static std::vector<float> verts = {
     -0.5f,
     -0.5f,
@@ -108,6 +116,9 @@ int main(int argc, char *argv[])
                     break;
                 }
             } break;
+                case SDL_WINDOWEVENT:
+                    SDL_GetWindowSize(window, &viewport.w, &viewport.h);
+                    break;
             }
         }
 
@@ -117,6 +128,8 @@ int main(int argc, char *argv[])
         ImGui::ShowDemoWindow();
         ImGui::Render();
 
+        auto const& [x, y, w, h] = viewport;
+        glViewport(x, y, w, h);
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glBindVertexArray(vao);
@@ -136,3 +149,5 @@ int main(int argc, char *argv[])
 
     return 0;
 }
+
+
