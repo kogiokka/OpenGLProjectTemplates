@@ -16,15 +16,22 @@ add_executable(sdl2-example)
 add_library(imgui STATIC)
 add_library(glad STATIC)
 
-
 # Compiler Settings ############################################################
-## Require C++17
-target_compile_features(sdl2-example PRIVATE cxx_std_17)
 
-### Turn off compiler extensions for cross-platform portability.
-set_target_properties(sdl2-example imgui glad PROPERTIES
-    C_EXTENSIONS OFF
-    CXX_EXTENSIONS OFF
+## Set C++ standard. Require C++17.
+## Turn off compiler extensions for cross-platform portability.
+set_target_properties(sdl2-example imgui
+    PROPERTIES
+        CXX_STANDARD 17
+        CXX_STANDARD_REQUIRED ON
+        CXX_EXTENSIONS OFF
+)
+
+## Set C standard.
+set_target_properties(glad
+    PROPERTIES
+        C_STANDARD 11
+        C_EXTENSIONS OFF
 )
 
 ## Compiler flags for different compilers and different build configurations.
