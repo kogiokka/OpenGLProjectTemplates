@@ -173,24 +173,18 @@ endif()
     Create a symbolic link from build tree to the shaders in source tree, so the
     executable in build tree will be able to find them.
 
-    Tell CMake to create a custom target that performs the symlink action, and let
-    our sdl2-example depends on it.
-
     NOTICE: Enable Developer Mode on MS Windows to create symbolic links.
 ]]
-
-add_custom_target(res-symlink
+add_custom_command(TARGET sdl2-example POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E create_symlink
         "${CMAKE_SOURCE_DIR}/shaders"
-        "${CMAKE_BINARY_DIR}/shaders"
+        "$<TARGET_FILE_DIR:sdl2-example>/shaders"
     DEPENDS
         "${CMAKE_SOURCE_DIR}/shaders" # Make sure the directory exists
     COMMENT "Creating symlink from build tree to project resources..."
     VERBATIM
 )
 
-## Always create the symlink before building sdl2-example.
-add_dependencies(sdl2-example res-symlink)
 
 # CPack ########################################################################
 #[[
