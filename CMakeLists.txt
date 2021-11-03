@@ -52,20 +52,14 @@ endif()
 
 ## Set the compile options of targets according to the "build configuration".
 #[[
-    $<CONFIG:cfgs>
-        1 if config is any one of the entries in comma-separated list cfgs.
-
     $<CONFIG:Debug>
         Evaluates to 1 if the build configuration is "Debug", or else it evaluates to 0.
 
-    $<CONFIG:Release>
-        Evaluates to 1 if the build configuration is "Release", or else it evaluates to 0.
+    $<1:Debug_Mode>
+        Expands to "Debug_Mode".
 
-    $<$<CONFIG:Debug>:"Debug Mode">
-        Expands to "Debug Mode" when the "Debug" configuration is used, or else expands to an empty string.
-
-    $<$<CONFIG:Release>:"Release Mode">
-        Expands to "Release Mode" when the "Release" configuration is used, or else expands to an empty string.
+    $<0:DebugMode>
+        Expands to an empty string.
 
     See details about generator-expressions at
         https://cmake.org/cmake/help/latest/manual/cmake-generator-expressions.7.html
@@ -145,6 +139,8 @@ target_sources(sdl2-example PRIVATE
 )
 
 # Link the Libraries ###########################################################
+## GLAD use `dlopen` and `dlclose` functions in some environments. Link GLAD
+## library with `CMAKE_DL_LIBS` and CMake will take care of it.
 target_link_libraries(glad PRIVATE ${CMAKE_DL_LIBS})
 target_link_libraries(sdl2-example PRIVATE
     glad
