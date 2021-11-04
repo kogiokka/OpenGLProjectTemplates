@@ -37,19 +37,6 @@ glm::mat4 orthoProjectionMatrix(int width, int height, float fov)
     return glm::ortho(left, right, bottom, top, 0.0f, 10.0f);
 }
 
-GLuint initShaderProgram()
-{
-    using namespace shader;
-
-    GLuint program = createProgram();
-
-    attachShader(program, GL_VERTEX_SHADER, "shaders/default.vert");
-    attachShader(program, GL_FRAGMENT_SHADER, "shaders/default.frag");
-    linkProgram(program);
-
-    return program;
-}
-
 int main(int argc, char* argv[])
 {
     sdl::window::OpenGLWindow window = sdl::window::init("NTOU SDL2 Beginner Template", 800, 600);
@@ -86,7 +73,10 @@ int main(int argc, char* argv[])
     style.FrameRounding = 3.0f;
     style.FrameBorderSize = 1.0f;
 
-    GLuint const program = initShaderProgram();
+    GLuint program = gl::shader::create();
+    gl::shader::attach(program, gl::shader::Stage::Vert, "shaders/default.vert");
+    gl::shader::attach(program, gl::shader::Stage::Frag, "shaders/default.frag");
+    gl::shader::link(program);
 
     glm::mat4 const identityMat = glm::mat4(1.0f);
     glm::mat4 const modelMatrix = identityMat;
@@ -107,10 +97,10 @@ int main(int argc, char* argv[])
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glBindVertexArray(vao);
-        glUseProgram(program);
 
-        shader::setUniformMatrix4fv(program, "modelMat", modelMatrix);
-        shader::setUniformMatrix4fv(program, "viewProjMat", orthoProjectionMatrix(w, h, 1.0f) * viewMatrix);
+        gl::shader::use(program);
+        gl::shader::uniform::matrix4fv(program, "modelMat", modelMatrix);
+        gl::shader::uniform::matrix4fv(program, "viewProjMat", orthoProjectionMatrix(w, h, 1.0f) * viewMatrix);
 
         glDrawArrays(GL_TRIANGLES, 0, 3);
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -121,7 +111,7 @@ int main(int argc, char* argv[])
     glDeleteBuffers(1, &vbo);
     glDeleteVertexArrays(1, &vao);
 
-    shader::deleteProgram(program);
+    gl::shader::destroy(program);
     sdl::window::destroy(window);
 
     SDL_Quit();

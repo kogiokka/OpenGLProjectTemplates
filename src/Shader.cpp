@@ -7,32 +7,31 @@
 #include <iostream>
 #include <unordered_map>
 
-namespace shader::details
+namespace gl::shader::get
 {
-    int uniformLocation(GLuint programId, std::string const uniformName)
+    std::string shaderInfoLog(GLuint shaderObject)
     {
-        using namespace std;
+        GLint len;
+        std::string log;
 
-        static unordered_map<string, GLint> locations;
-
-        if (locations.find(uniformName) != locations.end())
-        {
-            return locations[uniformName];
-        }
-
-        GLchar const* name = uniformName.c_str();
-        int loc = glGetUniformLocation(programId, name);
-        if (loc == -1)
-        {
-            cerr << "[Error] Uniform \"" << uniformName << "\" does not exist." << endl;
-        }
-
-        locations[uniformName] = loc;
-
-        return loc;
+        glGetShaderiv(shaderObject, GL_INFO_LOG_LENGTH, &len);
+        log.resize(len);
+        glGetShaderInfoLog(shaderObject, len, nullptr, log.data());
+        return log;
     }
 
-    bool isCompiled(GLuint shaderObject)
+    std::string programInfoLog(GLuint programId)
+    {
+        GLint len;
+        std::string log;
+
+        glGetProgramiv(programId, GL_INFO_LOG_LENGTH, &len);
+        log.resize(len);
+        glGetProgramInfoLog(programId, len, nullptr, log.data());
+        return log;
+    }
+
+    bool compileStatus(GLuint shaderObject)
     {
         GLint success;
         glGetShaderiv(shaderObject, GL_COMPILE_STATUS, &success);
@@ -42,18 +41,11 @@ namespace shader::details
             return true;
         }
 
-        GLint logLen;
-        std::string log;
-
-        glGetShaderiv(shaderObject, GL_INFO_LOG_LENGTH, &logLen);
-        log.resize(logLen);
-        glGetShaderInfoLog(shaderObject, logLen, nullptr, log.data());
-        std::cerr << "[Error] " << log << std::endl;
-
+        std::cerr << "[Error] " << shaderInfoLog(shaderObject) << std::endl;
         return false;
     }
 
-    bool isLinked(GLuint programId)
+    bool linkStatus(GLuint programId)
     {
         GLint success;
         glGetProgramiv(programId, GL_LINK_STATUS, &success);
@@ -63,57 +55,54 @@ namespace shader::details
             return true;
         }
 
-        GLint logLen;
-        std::string log;
-        glGetProgramiv(programId, GL_INFO_LOG_LENGTH, &logLen);
-        log.resize(logLen);
-        glGetProgramInfoLog(programId, logLen, nullptr, log.data());
-        std::cerr << "[Error] " << log << std::endl;
-
+        std::cerr << "[Error] " << programInfoLog(programId) << std::endl;
         return false;
     }
 }
 
-namespace shader
+namespace gl::shader::uniform
 {
-    GLuint createProgram() { return glCreateProgram(); }
-
-    void deleteProgram(GLuint programId) { glDeleteProgram(programId); }
-
-    void attachShader(GLuint programId, GLenum shaderType, std::string const& filepath)
+    namespace details
     {
-        using namespace std;
-
-        ifstream file;
-        string source;
-
-        file.open(filepath.data());
-        if (file.fail())
+        int getLocation(GLuint programId, std::string const uniformName)
         {
-            return;
+            using namespace std;
+
+            static unordered_map<string, GLint> locations;
+
+            if (locations.find(uniformName) != locations.end())
+            {
+                return locations[uniformName];
+            }
+
+            GLchar const* name = uniformName.c_str();
+            int loc = glGetUniformLocation(programId, name);
+            if (loc == -1)
+            {
+                cerr << "[Error] Uniform \"" << uniformName << "\" does not exist." << endl;
+            }
+
+            locations[uniformName] = loc;
+
+            return loc;
         }
-        source.resize(filesystem::file_size(filepath));
-        file.read(source.data(), source.size());
-        file.close();
-
-        char const* const shaderSourceArray[1] = {source.c_str()};
-
-        GLuint shaderObject = glCreateShader(shaderType);
-        glShaderSource(shaderObject, 1, shaderSourceArray, nullptr);
-        glCompileShader(shaderObject);
-
-        if (details::isCompiled(shaderObject))
-        {
-            glAttachShader(programId, shaderObject);
-        }
-
-        glDeleteShader(shaderObject);
     }
 
-    void linkProgram(GLuint programId)
+    void matrix4fv(GLuint programId, std::string const& uniformName, glm::mat4 const& mat)
+    {
+        glUniformMatrix4fv(details::getLocation(programId, uniformName), 1, GL_FALSE, glm::value_ptr(mat));
+    }
+}
+
+namespace gl::shader
+{
+    GLuint create() { return glCreateProgram(); }
+    void destroy(GLuint programId) { glDeleteProgram(programId); }
+    void use(GLuint programId) { glUseProgram(programId); }
+    void link(GLuint programId)
     {
         glLinkProgram(programId);
-        if (details::isLinked(programId))
+        if (get::linkStatus(programId))
         {
             std::cout << "[Info] Shader objects have been successfully linked into the program!" << std::endl;
         }
@@ -123,8 +112,39 @@ namespace shader
         }
     }
 
-    void setUniformMatrix4fv(GLuint programId, std::string const& uniformName, glm::mat4 const& mat)
+    void attach(GLuint programId, Stage stage, std::string const& filepath)
     {
-        glUniformMatrix4fv(details::uniformLocation(programId, uniformName), 1, GL_FALSE, glm::value_ptr(mat));
+        using namespace std;
+
+        ifstream file;
+        string source = "";
+
+        file.open(filepath.data());
+        if (file.fail())
+        {
+            cerr << "Failed to read shader file: \"" << filepath << "\"." << endl;
+            return;
+        }
+        source.resize(filesystem::file_size(filepath));
+        file.read(source.data(), source.size());
+        file.close();
+
+        ::gl::shader::attachSource(programId, stage, source);
+    }
+
+    void attachSource(GLuint programId, Stage stage, std::string const& source)
+    {
+        char const* const shaderSourceArray[1] = {source.c_str()};
+
+        GLuint shaderObject = glCreateShader(stage);
+        glShaderSource(shaderObject, 1, shaderSourceArray, nullptr);
+        glCompileShader(shaderObject);
+
+        if (get::compileStatus(shaderObject))
+        {
+            glAttachShader(programId, shaderObject);
+        }
+
+        glDeleteShader(shaderObject);
     }
 }
