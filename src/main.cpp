@@ -1,22 +1,17 @@
+#include "OpenGLWindow.hpp"
 #include "Shader.hpp"
 
 #include "glad/glad.h"
 #include "imgui.h"
 #include "imgui_impl_opengl3.h"
 #include "imgui_impl_sdl.h"
+
 #include <SDL.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <iostream>
 #include <vector>
-
-static SDL_Rect viewport = {
-    0,   // x
-    0,   // y
-    800, // width
-    600, // height
-};
 
 static std::vector<float> verts = {
     -0.5f,
@@ -57,36 +52,7 @@ GLuint initShaderProgram()
 
 int main(int argc, char* argv[])
 {
-    if (SDL_Init(SDL_INIT_VIDEO) != 0)
-    {
-        std::cout << "SDL_Init Error: " << SDL_GetError() << std::endl;
-        return 1;
-    }
-
-    // OpenGL 3.3
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
-
-#ifdef __linux__
-    // Hints for Linux
-    SDL_SetHint(SDL_HINT_VIDEO_X11_NET_WM_BYPASS_COMPOSITOR, "0");
-#endif
-
-    auto const flags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI;
-    SDL_Window* window =
-        SDL_CreateWindow("OpenGL with SDL2!", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, flags);
-    if (window == nullptr)
-    {
-        std::cout << "SDL_CreateWindow Error: " << SDL_GetError() << std::endl;
-        SDL_Quit();
-        return 1;
-    }
-
-    SDL_SetWindowMinimumSize(window, 400, 300);
-    auto glContext = SDL_GL_CreateContext(window);
-    SDL_GL_MakeCurrent(window, glContext);
-    SDL_GL_SetSwapInterval(1);
+    sdl::window::OpenGLWindow window = sdl::window::init("NTOU SDL2 Beginner Template", 800, 600);
 
     gladLoadGLLoader(SDL_GL_GetProcAddress);
 
@@ -113,52 +79,30 @@ int main(int argc, char* argv[])
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGui_ImplSDL2_InitForOpenGL(window, glContext);
+    ImGui_ImplSDL2_InitForOpenGL(window.handle, window.glContext);
     ImGui_ImplOpenGL3_Init();
     ImGuiStyle& style = ImGui::GetStyle();
     style.WindowRounding = 5.0f;
     style.FrameRounding = 3.0f;
     style.FrameBorderSize = 1.0f;
 
-    bool isDone = false;
     GLuint const program = initShaderProgram();
 
     glm::mat4 const identityMat = glm::mat4(1.0f);
     glm::mat4 const modelMatrix = identityMat;
     glm::mat4 const viewMatrix = identityMat;
 
-    while (!isDone)
+    while (!window.isDone)
     {
-        SDL_Event event;
-        while (SDL_PollEvent(&event))
-        {
-            switch (event.type)
-            {
-                case SDL_QUIT: isDone = true; break;
-                case SDL_KEYDOWN:
-                {
-                    switch (event.key.keysym.sym)
-                    {
-                        case SDLK_q:
-                            if (KMOD_CTRL & event.key.keysym.mod)
-                            {
-                                isDone = true;
-                            }
-                            break;
-                    }
-                }
-                break;
-                case SDL_WINDOWEVENT: SDL_GetWindowSize(window, &viewport.w, &viewport.h); break;
-            }
-        }
-
         ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplSDL2_NewFrame(window);
+        ImGui_ImplSDL2_NewFrame(window.handle);
         ImGui::NewFrame();
         ImGui::ShowDemoWindow();
         ImGui::Render();
 
-        auto const& [x, y, w, h] = viewport;
+        sdl::window::handleEvent(window);
+
+        auto const& [x, y, w, h] = window.viewport;
         glViewport(x, y, w, h);
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -171,13 +115,15 @@ int main(int argc, char* argv[])
         glDrawArrays(GL_TRIANGLES, 0, 3);
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-        SDL_GL_SwapWindow(window);
+        sdl::window::swap(window);
     }
 
-    shader::deleteProgram(program);
     glDeleteBuffers(1, &vbo);
     glDeleteVertexArrays(1, &vao);
-    SDL_DestroyWindow(window);
+
+    shader::deleteProgram(program);
+    sdl::window::destroy(window);
+
     SDL_Quit();
 
     return 0;
