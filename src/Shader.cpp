@@ -1,11 +1,37 @@
 #include "Shader.hpp"
 
+#include <glm/gtc/type_ptr.hpp> // glm::value_ptr
+
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <unordered_map>
 
 namespace shader::details
 {
+    int uniformLocation(GLuint programId, std::string const uniformName)
+    {
+        using namespace std;
+
+        static unordered_map<string, GLint> locations;
+
+        if (locations.find(uniformName) != locations.end())
+        {
+            return locations[uniformName];
+        }
+
+        GLchar const* name = uniformName.c_str();
+        int loc = glGetUniformLocation(programId, name);
+        if (loc == -1)
+        {
+            cerr << "[Error] Uniform \"" << uniformName << "\" does not exist." << endl;
+        }
+
+        locations[uniformName] = loc;
+
+        return loc;
+    }
+
     bool isCompiled(GLuint shaderObject)
     {
         GLint success;
@@ -95,5 +121,10 @@ namespace shader
         {
             glDeleteProgram(programId);
         }
+    }
+
+    void setUniformMatrix4fv(GLuint programId, std::string const& uniformName, glm::mat4 const& mat)
+    {
+        glUniformMatrix4fv(details::uniformLocation(programId, uniformName), 1, GL_FALSE, glm::value_ptr(mat));
     }
 }

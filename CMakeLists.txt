@@ -103,7 +103,7 @@ endif()
 # Find External Libraries ######################################################
 find_package(OpenGL REQUIRED)
 find_package(SDL2 REQUIRED)
-# find_package(glm REQUIRED)
+find_package(glm REQUIRED)
 
 
 # Include Path #################################################################
@@ -146,7 +146,7 @@ target_link_libraries(sdl2-example PRIVATE
     glad
     imgui
     SDL2::SDL2
-    # glm::glm
+    glm::glm
     OpenGL::GL
 )
 
