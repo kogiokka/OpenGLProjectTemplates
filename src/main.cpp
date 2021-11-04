@@ -39,7 +39,7 @@ glm::mat4 orthoProjectionMatrix(int width, int height, float fov)
 
 int main(int argc, char* argv[])
 {
-    sdl::window::OpenGLWindow window = sdl::window::init("NTOU SDL2 Beginner Template", 800, 600);
+    sdl::Window::OpenGLWindow window = sdl::Window::create("NTOU SDL2 Beginner Template", 800, 600);
 
     gladLoadGLLoader(SDL_GL_GetProcAddress);
 
@@ -90,7 +90,7 @@ int main(int argc, char* argv[])
         ImGui::ShowDemoWindow();
         ImGui::Render();
 
-        sdl::window::handleEvent(window);
+        sdl::Window::handleEvent(window);
 
         auto const& [x, y, w, h] = window.viewport;
         glViewport(x, y, w, h);
@@ -105,14 +105,14 @@ int main(int argc, char* argv[])
         glDrawArrays(GL_TRIANGLES, 0, 3);
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-        sdl::window::swap(window);
+        sdl::Window::swap(window);
     }
 
     glDeleteBuffers(1, &vbo);
     glDeleteVertexArrays(1, &vao);
 
     gl::Shader::destroy(program);
-    sdl::window::destroy(window);
+    sdl::Window::destroy(window);
 
     SDL_Quit();
 

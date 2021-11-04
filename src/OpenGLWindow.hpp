@@ -3,7 +3,7 @@
 #include <SDL.h>
 #include <string>
 
-namespace sdl::window
+namespace sdl::Window
 {
     struct OpenGLWindow
     {
@@ -12,7 +12,7 @@ namespace sdl::window
         SDL_Rect viewport = {};
         bool isDone = false;
     };
-    OpenGLWindow init(std::string const& title, int width, int height);
+    OpenGLWindow create(std::string const& title, int width, int height);
     void destroy(OpenGLWindow& window);
     void swap(OpenGLWindow& window);
     void handleEvent(OpenGLWindow& window);

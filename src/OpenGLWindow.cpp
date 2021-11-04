@@ -7,7 +7,7 @@
 #include <iostream>
 #include <string>
 
-namespace sdl::window::details
+namespace sdl::Window::details
 {
     void onWindowEvent(OpenGLWindow& window, SDL_WindowEvent const& e)
     {
@@ -33,9 +33,9 @@ namespace sdl::window::details
     void onMouseMotionEvent(OpenGLWindow& window, SDL_MouseMotionEvent const& e) { }
 }
 
-namespace sdl::window
+namespace sdl::Window
 {
-    OpenGLWindow init(std::string const& title, int width, int height)
+    OpenGLWindow create(std::string const& title, int width, int height)
     {
         OpenGLWindow window;
         window.viewport = {0, 0, 800, 600};
