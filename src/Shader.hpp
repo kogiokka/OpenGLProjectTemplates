@@ -5,7 +5,7 @@
 
 #include <string>
 
-namespace gl::shader
+namespace gl::Shader
 {
     enum Stage : GLenum
     {
@@ -25,7 +25,7 @@ namespace gl::shader
     void attachSource(GLuint programId, Stage stage, const std::string& source);
 }
 
-namespace gl::shader::uniform
+namespace gl::Shader::Uniform
 {
     void matrix4fv(GLuint programId, const std::string& uniformName, const glm::mat4& mat);
 }

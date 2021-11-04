@@ -73,10 +73,10 @@ int main(int argc, char* argv[])
     style.FrameRounding = 3.0f;
     style.FrameBorderSize = 1.0f;
 
-    GLuint program = gl::shader::create();
-    gl::shader::attach(program, gl::shader::Stage::Vert, "shaders/default.vert");
-    gl::shader::attach(program, gl::shader::Stage::Frag, "shaders/default.frag");
-    gl::shader::link(program);
+    GLuint program = gl::Shader::create();
+    gl::Shader::attach(program, gl::Shader::Stage::Vert, "shaders/default.vert");
+    gl::Shader::attach(program, gl::Shader::Stage::Frag, "shaders/default.frag");
+    gl::Shader::link(program);
 
     glm::mat4 const identityMat = glm::mat4(1.0f);
     glm::mat4 const modelMatrix = identityMat;
@@ -98,9 +98,9 @@ int main(int argc, char* argv[])
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glBindVertexArray(vao);
 
-        gl::shader::use(program);
-        gl::shader::uniform::matrix4fv(program, "modelMat", modelMatrix);
-        gl::shader::uniform::matrix4fv(program, "viewProjMat", orthoProjectionMatrix(w, h, 1.0f) * viewMatrix);
+        gl::Shader::use(program);
+        gl::Shader::Uniform::matrix4fv(program, "modelMat", modelMatrix);
+        gl::Shader::Uniform::matrix4fv(program, "viewProjMat", orthoProjectionMatrix(w, h, 1.0f) * viewMatrix);
 
         glDrawArrays(GL_TRIANGLES, 0, 3);
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -111,7 +111,7 @@ int main(int argc, char* argv[])
     glDeleteBuffers(1, &vbo);
     glDeleteVertexArrays(1, &vao);
 
-    gl::shader::destroy(program);
+    gl::Shader::destroy(program);
     sdl::window::destroy(window);
 
     SDL_Quit();

@@ -7,64 +7,11 @@
 #include <iostream>
 #include <unordered_map>
 
-namespace gl::shader::get
-{
-    std::string shaderInfoLog(GLuint shaderObject)
-    {
-        GLint len;
-        std::string log;
-
-        glGetShaderiv(shaderObject, GL_INFO_LOG_LENGTH, &len);
-        log.resize(len);
-        glGetShaderInfoLog(shaderObject, len, nullptr, log.data());
-        return log;
-    }
-
-    std::string programInfoLog(GLuint programId)
-    {
-        GLint len;
-        std::string log;
-
-        glGetProgramiv(programId, GL_INFO_LOG_LENGTH, &len);
-        log.resize(len);
-        glGetProgramInfoLog(programId, len, nullptr, log.data());
-        return log;
-    }
-
-    bool compileStatus(GLuint shaderObject)
-    {
-        GLint success;
-        glGetShaderiv(shaderObject, GL_COMPILE_STATUS, &success);
-
-        if (success == GL_TRUE)
-        {
-            return true;
-        }
-
-        std::cerr << "[Error] " << shaderInfoLog(shaderObject) << std::endl;
-        return false;
-    }
-
-    bool linkStatus(GLuint programId)
-    {
-        GLint success;
-        glGetProgramiv(programId, GL_LINK_STATUS, &success);
-
-        if (success == GL_TRUE)
-        {
-            return true;
-        }
-
-        std::cerr << "[Error] " << programInfoLog(programId) << std::endl;
-        return false;
-    }
-}
-
-namespace gl::shader::uniform
+namespace gl::Shader::Uniform
 {
     namespace details
     {
-        int getLocation(GLuint programId, std::string const uniformName)
+        int getLocation(GLuint programId, const std::string uniformName)
         {
             using namespace std;
 
@@ -88,13 +35,66 @@ namespace gl::shader::uniform
         }
     }
 
-    void matrix4fv(GLuint programId, std::string const& uniformName, glm::mat4 const& mat)
+    void matrix4fv(GLuint programId, const std::string& uniformName, glm::mat4 const& mat)
     {
         glUniformMatrix4fv(details::getLocation(programId, uniformName), 1, GL_FALSE, glm::value_ptr(mat));
     }
 }
 
-namespace gl::shader
+namespace gl::Shader::Param
+{
+    GLint compileStatus(GLuint shaderObject)
+    {
+        GLint status;
+        glGetShaderiv(shaderObject, GL_COMPILE_STATUS, &status);
+        return status;
+    }
+
+    std::string shaderInfoLog(GLuint shaderObject)
+    {
+        GLint len;
+        std::string log;
+
+        glGetShaderiv(shaderObject, GL_INFO_LOG_LENGTH, &len);
+        log.resize(len);
+        glGetShaderInfoLog(shaderObject, len, nullptr, log.data());
+        return log;
+    }
+
+    GLint linkStatus(GLuint programId)
+    {
+        GLint status;
+        glGetProgramiv(programId, GL_LINK_STATUS, &status);
+        return status;
+    }
+
+    std::string programInfoLog(GLuint programId)
+    {
+        GLint len;
+        std::string log;
+
+        glGetProgramiv(programId, GL_INFO_LOG_LENGTH, &len);
+        log.resize(len);
+        glGetProgramInfoLog(programId, len, nullptr, log.data());
+        return log;
+    }
+
+    GLint attachedShaders(GLuint programId)
+    {
+        GLint num;
+        glGetProgramiv(programId, GL_ATTACHED_SHADERS, &num);
+        return num;
+    }
+
+    GLint activeAttributes(GLuint programId)
+    {
+        GLint num;
+        glGetProgramiv(programId, GL_ACTIVE_ATTRIBUTES, &num);
+        return num;
+    }
+}
+
+namespace gl::Shader
 {
     GLuint create() { return glCreateProgram(); }
     void destroy(GLuint programId) { glDeleteProgram(programId); }
@@ -102,17 +102,20 @@ namespace gl::shader
     void link(GLuint programId)
     {
         glLinkProgram(programId);
-        if (get::linkStatus(programId))
+        if (Param::linkStatus(programId) == GL_TRUE)
         {
             std::cout << "[Info] Shader objects have been successfully linked into the program!" << std::endl;
+            std::cout << "[Info] Number of attached shaders: " << Param::attachedShaders(programId) << std::endl;
+            std::cout << "[Info] Number of active attributes: " << Param::activeAttributes(programId) << std::endl;
         }
         else
         {
+            std::cerr << "[Error] " << Param::programInfoLog(programId) << std::endl;
             glDeleteProgram(programId);
         }
     }
 
-    void attach(GLuint programId, Stage stage, std::string const& filepath)
+    void attach(GLuint programId, Stage stage, const std::string& filepath)
     {
         using namespace std;
 
@@ -129,20 +132,24 @@ namespace gl::shader
         file.read(source.data(), source.size());
         file.close();
 
-        ::gl::shader::attachSource(programId, stage, source);
+        ::gl::Shader::attachSource(programId, stage, source);
     }
 
-    void attachSource(GLuint programId, Stage stage, std::string const& source)
+    void attachSource(GLuint programId, Stage stage, const std::string& source)
     {
-        char const* const shaderSourceArray[1] = {source.c_str()};
+        const char* const shaderSourceArray[1] = {source.c_str()};
 
         GLuint shaderObject = glCreateShader(stage);
         glShaderSource(shaderObject, 1, shaderSourceArray, nullptr);
         glCompileShader(shaderObject);
 
-        if (get::compileStatus(shaderObject))
+        if (Param::compileStatus(shaderObject) == GL_TRUE)
         {
             glAttachShader(programId, shaderObject);
+        }
+        else
+        {
+            std::cerr << "[Error] " << Param::shaderInfoLog(shaderObject) << std::endl;
         }
 
         glDeleteShader(shaderObject);
