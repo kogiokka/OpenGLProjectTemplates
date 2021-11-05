@@ -1,7 +1,5 @@
 #pragma once
 
-#include "common.hpp"
-
 #include "glad/glad.h"
 
 namespace gl::Buffer

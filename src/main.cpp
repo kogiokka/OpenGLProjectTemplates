@@ -46,10 +46,10 @@ int main(int argc, char* argv[])
     gl::Buffer::data(GL_ARRAY_BUFFER, verts.size() * floatByteNum, verts.data(), GL_STATIC_DRAW);
 
     gl::VertexArray::bind(vao);
-    gl::VertexArray::enable(gl::VertexAttrib::Position);
+    gl::VertexArray::enable(gl::VertexArray::Attrib::Position);
 
     gl::Buffer::bind(GL_ARRAY_BUFFER, vbo);
-    gl::VertexArray::pointer(gl::VertexAttrib::Position, 3, GL_FLOAT, GL_TRUE, 3 * floatByteNum, 0);
+    gl::VertexArray::pointer(gl::VertexArray::Attrib::Position, 3, GL_FLOAT, GL_TRUE, 3 * floatByteNum, 0);
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);

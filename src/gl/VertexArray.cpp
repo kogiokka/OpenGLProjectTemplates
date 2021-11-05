@@ -10,9 +10,9 @@ namespace gl::VertexArray
     }
     void destroy(GLuint id) { glDeleteVertexArrays(1, &id); }
     void bind(GLuint id) { glBindVertexArray(id); }
-    void enable(VertexAttrib index) { glEnableVertexAttribArray(index); }
-    void disable(VertexAttrib index) { glDisableVertexAttribArray(index); }
-    void pointer(VertexAttrib index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, GLint offset)
+    void enable(Attrib index) { glEnableVertexAttribArray(index); }
+    void disable(Attrib index) { glDisableVertexAttribArray(index); }
+    void pointer(Attrib index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, GLint offset)
     {
         glVertexAttribPointer(index, size, type, normalized, stride, reinterpret_cast<const void*>(offset));
     }
