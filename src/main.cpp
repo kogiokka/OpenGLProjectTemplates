@@ -1,5 +1,7 @@
+#include "Buffer.hpp"
 #include "OpenGLWindow.hpp"
 #include "Shader.hpp"
+#include "VertexArray.hpp"
 
 #include "glad/glad.h"
 #include "imgui.h"
@@ -48,18 +50,17 @@ int main(int argc, char* argv[])
               << "Renderer:              " << glGetString(GL_RENDERER) << "\n"
               << "Vendor:                " << glGetString(GL_VENDOR) << std::endl;
 
-    GLuint vao;
-    GLuint vbo;
-    glGenVertexArrays(1, &vao);
-    glGenBuffers(1, &vbo);
+    GLuint vao = gl::VertexArray::create();
+    GLuint vbo = gl::Buffer::create();
 
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, verts.size() * sizeof(float), verts.data(), GL_STATIC_DRAW);
+    gl::Buffer::bind(gl::BufferTarget::Attribs, vbo);
+    gl::Buffer::data(gl::BufferTarget::Attribs, gl::DataType::Float, verts.size(), verts.data(), GL_STATIC_DRAW);
 
-    glBindVertexArray(vao);
-    glEnableVertexAttribArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
+    gl::VertexArray::bind(vao);
+    gl::VertexArray::enable(gl::VertexAttrib::Position);
+
+    gl::Buffer::bind(gl::BufferTarget::Attribs, vbo);
+    gl::VertexArray::pointer(gl::VertexAttrib::Position, gl::DataType::Float, 3, 3, 0);
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
