@@ -14,16 +14,26 @@
 #include <iostream>
 #include <vector>
 
-static std::vector<float> verts = {
-    -0.5f,
-    -0.5f,
-    0.0f, // left
-    0.5f,
-    -0.5f,
-    0.0f, // right
-    0.0f,
-    0.5f,
-    0.0f // top
+struct Vertex
+{
+    struct Position
+    {
+        float x, y, z;
+    };
+
+    Position position;
+};
+
+static std::vector<Vertex> triangle = {
+    Vertex{
+        {-0.5f, -0.5f, 0.0f},
+    },
+    Vertex{
+        {0.5f, -0.5f, 0.0f},
+    },
+    Vertex{
+        {0.0f, 0.5f, 0.0f},
+    },
 };
 
 int main(int argc, char* argv[])
@@ -43,13 +53,15 @@ int main(int argc, char* argv[])
     const unsigned int floatByteNum = sizeof(float);
 
     gl::Buffer::bind(GL_ARRAY_BUFFER, vbo);
-    gl::Buffer::data(GL_ARRAY_BUFFER, verts.size() * floatByteNum, verts.data(), GL_STATIC_DRAW);
+    gl::Buffer::data(GL_ARRAY_BUFFER, triangle.size() * sizeof(Vertex), triangle.data(), GL_STATIC_DRAW);
+
+    using gl::VertexArray::Attrib;
 
     gl::VertexArray::bind(vao);
-    gl::VertexArray::enable(gl::VertexArray::Attrib::Position);
+    gl::VertexArray::enable(Attrib::Position);
 
     gl::Buffer::bind(GL_ARRAY_BUFFER, vbo);
-    gl::VertexArray::pointer(gl::VertexArray::Attrib::Position, 3, GL_FLOAT, GL_TRUE, 3 * floatByteNum, 0);
+    gl::VertexArray::pointer(Attrib::Position, 3, GL_FLOAT, GL_TRUE, sizeof(Vertex), offsetof(Vertex, position));
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
