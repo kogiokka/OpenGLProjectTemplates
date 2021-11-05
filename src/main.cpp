@@ -53,14 +53,16 @@ int main(int argc, char* argv[])
     GLuint vao = gl::VertexArray::create();
     GLuint vbo = gl::Buffer::create();
 
-    gl::Buffer::bind(gl::BufferTarget::Attribs, vbo);
-    gl::Buffer::data(gl::BufferTarget::Attribs, gl::DataType::Float, verts.size(), verts.data(), GL_STATIC_DRAW);
+    const unsigned int floatByteNum = sizeof(float);
+
+    gl::Buffer::bind(GL_ARRAY_BUFFER, vbo);
+    gl::Buffer::data(GL_ARRAY_BUFFER, verts.size() * floatByteNum, verts.data(), GL_STATIC_DRAW);
 
     gl::VertexArray::bind(vao);
     gl::VertexArray::enable(gl::VertexAttrib::Position);
 
-    gl::Buffer::bind(gl::BufferTarget::Attribs, vbo);
-    gl::VertexArray::pointer(gl::VertexAttrib::Position, gl::DataType::Float, 3, 3, 0);
+    gl::Buffer::bind(GL_ARRAY_BUFFER, vbo);
+    gl::VertexArray::pointer(gl::VertexAttrib::Position, 3, GL_FLOAT, GL_TRUE, 3 * floatByteNum, 0);
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);

@@ -8,6 +8,6 @@ namespace gl::Buffer
 {
     GLuint create();
     void destroy(GLuint id);
-    void bind(BufferTarget target, GLuint vbo);
-    void data(BufferTarget target, gl::DataType type, int size, const void* dataPointer, GLenum usage);
+    void bind(GLenum target, GLuint vbo);
+    void data(GLenum target, GLsizeiptr size, const GLvoid* data, GLenum usage);
 }

@@ -12,8 +12,8 @@ namespace gl::VertexArray
     void bind(GLuint id) { glBindVertexArray(id); }
     void enable(VertexAttrib index) { glEnableVertexAttribArray(index); }
     void disable(VertexAttrib index) { glDisableVertexAttribArray(index); }
-    void pointer(VertexAttrib index, gl::DataType type, int attribSize, int vertexSize, const void* offset)
+    void pointer(VertexAttrib index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, GLint offset)
     {
-        glVertexAttribPointer(index, attribSize, type, GL_FALSE, sizeOf(type) * vertexSize, offset);
+        glVertexAttribPointer(index, size, type, normalized, stride, reinterpret_cast<const void*>(offset));
     }
 }

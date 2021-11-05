@@ -11,5 +11,5 @@ namespace gl::VertexArray
     void bind(GLuint id);
     void enable(VertexAttrib index);
     void disable(VertexAttrib index);
-    void pointer(VertexAttrib index, gl::DataType type, int attribSize, int vertexSize, const void* offset);
+    void pointer(VertexAttrib index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, GLint pointer);
 }

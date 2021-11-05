@@ -10,9 +10,9 @@ namespace gl::Buffer
     }
 
     void destroy(GLuint id) { glDeleteBuffers(1, &id); }
-    void bind(BufferTarget target, GLuint bufferId) { glBindBuffer(target, bufferId); }
-    void data(BufferTarget target, gl::DataType type, int size, const void* dataPointer, GLenum usage)
+    void bind(GLenum target, GLuint bufferId) { glBindBuffer(target, bufferId); }
+    void data(GLenum target, GLsizeiptr size, const GLvoid* data, GLenum usage)
     {
-        glBufferData(target, size * gl::sizeOf(type), dataPointer, usage);
+        glBufferData(target, size, data, usage);
     }
 }
