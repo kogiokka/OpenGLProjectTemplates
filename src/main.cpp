@@ -1,7 +1,7 @@
-#include "Buffer.hpp"
 #include "OpenGLWindow.hpp"
-#include "Shader.hpp"
-#include "VertexArray.hpp"
+#include "gl/Buffer.hpp"
+#include "gl/Shader.hpp"
+#include "gl/VertexArray.hpp"
 
 #include "glad/glad.h"
 #include "imgui.h"

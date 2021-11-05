@@ -112,6 +112,7 @@ find_package(glm REQUIRED)
 target_include_directories(imgui PUBLIC "ext/imgui")
 target_include_directories(glad PUBLIC "ext/glad/include")
 target_include_directories(sdl2-example PRIVATE
+    "include"
     "ext/imgui/backends"
 )
 
@@ -122,12 +123,13 @@ file(GLOB GLAD_Source "ext/glad/src/glad.c")
 file(GLOB ImGui_Source CONFIGURE_DEPENDS
     "ext/imgui/*.cpp"
 )
-file(GLOB ImGui_Impl_Source CONFIGURE_DEPENDS
+file(GLOB ImGui_Impl_Source
     "ext/imgui/backends/imgui_impl_opengl3.cpp"
     "ext/imgui/backends/imgui_impl_sdl.cpp"
 )
-file(GLOB_RECURSE My_Source CONFIGURE_DEPENDS
+file(GLOB My_Source CONFIGURE_DEPENDS
     "src/*.cpp"
+    "src/gl/*.cpp"
 )
 
 ## Assign source files to the binary targets (sdl2-example, glad, and imgui).

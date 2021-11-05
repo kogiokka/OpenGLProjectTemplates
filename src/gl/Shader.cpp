@@ -1,4 +1,4 @@
-#include "Shader.hpp"
+#include "gl/Shader.hpp"
 
 #include <glm/gtc/type_ptr.hpp> // glm::value_ptr
 

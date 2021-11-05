@@ -1,4 +1,4 @@
-#include "common.hpp"
+#include "gl/common.hpp"
 
 namespace gl
 {

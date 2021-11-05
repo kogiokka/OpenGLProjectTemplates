@@ -1,4 +1,4 @@
-#include "Buffer.hpp"
+#include "gl/Buffer.hpp"
 
 namespace gl::Buffer
 {

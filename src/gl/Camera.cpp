@@ -1,4 +1,4 @@
-#include "Camera.hpp"
+#include "gl/Camera.hpp"
 
 namespace gl::Camera
 {

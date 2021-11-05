@@ -1,4 +1,4 @@
-#include "VertexArray.hpp"
+#include "gl/VertexArray.hpp"
 
 namespace gl::VertexArray
 {
