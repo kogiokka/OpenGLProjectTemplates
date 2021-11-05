@@ -14,7 +14,7 @@ namespace sdl::Window::details
         switch (e.event)
         {
             case SDL_WINDOWEVENT_RESIZED:
-                SDL_GetWindowSize(window.handle, &window.viewport.w, &window.viewport.h);
+                SDL_GetWindowSize(window.handle, &window.size.width, &window.size.height);
                 break;
             default: break;
         }
@@ -38,7 +38,7 @@ namespace sdl::Window
     OpenGLWindow create(std::string const& title, int width, int height)
     {
         OpenGLWindow window;
-        window.viewport = {0, 0, 800, 600};
+        window.size = {800, 600};
 
         if (SDL_Init(SDL_INIT_VIDEO) != 0)
         {

@@ -1,5 +1,6 @@
 #include "OpenGLWindow.hpp"
 #include "gl/Buffer.hpp"
+#include "gl/Camera.hpp"
 #include "gl/Shader.hpp"
 #include "gl/VertexArray.hpp"
 
@@ -9,8 +10,6 @@
 #include "imgui_impl_sdl.h"
 
 #include <SDL.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
 
 #include <iostream>
 #include <vector>
@@ -26,18 +25,6 @@ static std::vector<float> verts = {
     0.5f,
     0.0f // top
 };
-
-float aspectRatio(int width, int height) { return static_cast<float>(width) / static_cast<float>(height); }
-
-glm::mat4 orthoProjectionMatrix(int width, int height, float fov)
-{
-    float const top = fov;
-    float const right = aspectRatio(width, height) * fov;
-    float const bottom = -top;
-    float const left = -right;
-
-    return glm::ortho(left, right, bottom, top, 0.0f, 10.0f);
-}
 
 int main(int argc, char* argv[])
 {
@@ -82,8 +69,12 @@ int main(int argc, char* argv[])
     gl::Shader::link(program);
 
     glm::mat4 const identityMat = glm::mat4(1.0f);
-    glm::mat4 const modelMatrix = identityMat;
-    glm::mat4 const viewMatrix = identityMat;
+    glm::mat4 const modelMat = identityMat;
+
+    gl::Camera::Viewport = {0, 0, window.size.width, window.size.height};
+
+    glm::vec3 position = glm::vec3(0.0f, 0.0f, 3.0f);
+    glm::vec3 viewDir = glm::vec3(0.0f, 0.0f, -1.0f);
 
     while (!window.isDone)
     {
@@ -94,16 +85,20 @@ int main(int argc, char* argv[])
         ImGui::Render();
 
         sdl::Window::handleEvent(window);
+        gl::Camera::Viewport.width = window.size.width;
+        gl::Camera::Viewport.height = window.size.height;
 
-        auto const& [x, y, w, h] = window.viewport;
+        auto const& [x, y, w, h] = gl::Camera::Viewport;
         glViewport(x, y, w, h);
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glBindVertexArray(vao);
 
+        const glm::mat4 projMat = gl::Camera::perspective(glm::radians(45.0f), 0.01f, 100.0f);
+        const glm::mat4 viewMat = gl::Camera::view(position, position + viewDir);
         gl::Shader::use(program);
-        gl::Shader::Uniform::matrix4fv(program, "modelMat", modelMatrix);
-        gl::Shader::Uniform::matrix4fv(program, "viewProjMat", orthoProjectionMatrix(w, h, 1.0f) * viewMatrix);
+        gl::Shader::Uniform::matrix4fv(program, "modelMat", modelMat);
+        gl::Shader::Uniform::matrix4fv(program, "viewProjMat", projMat * viewMat);
 
         glDrawArrays(GL_TRIANGLES, 0, 3);
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

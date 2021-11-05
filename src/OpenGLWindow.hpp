@@ -7,9 +7,15 @@ namespace sdl::Window
 {
     struct OpenGLWindow
     {
+        struct Size
+        {
+            int width;
+            int height;
+        };
+
         SDL_Window* handle = nullptr;
         SDL_GLContext glContext = nullptr;
-        SDL_Rect viewport = {};
+        Size size;
         bool isDone = false;
     };
     OpenGLWindow create(std::string const& title, int width, int height);
