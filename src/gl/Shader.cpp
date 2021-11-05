@@ -104,7 +104,7 @@ namespace gl::Shader
         glLinkProgram(programId);
         if (Param::linkStatus(programId) == GL_TRUE)
         {
-            std::cout << "[Info] Shader objects have been successfully linked into the program!" << std::endl;
+            std::cout << "[Info] Linking Shader object(s) succeeded!" << std::endl;
             std::cout << "[Info] Number of attached shaders: " << Param::attachedShaders(programId) << std::endl;
             std::cout << "[Info] Number of active attributes: " << Param::activeAttributes(programId) << std::endl;
         }
