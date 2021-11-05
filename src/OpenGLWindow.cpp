@@ -9,7 +9,7 @@
 
 namespace sdl::Window::details
 {
-    void onWindowEvent(OpenGLWindow& window, SDL_WindowEvent const& e)
+    void onWindowEvent(OpenGLWindow& window, const SDL_WindowEvent& e)
     {
         switch (e.event)
         {
@@ -20,7 +20,7 @@ namespace sdl::Window::details
         }
     }
 
-    void onKeyDownEvent(OpenGLWindow& window, SDL_KeyboardEvent const& e)
+    void onKeyDownEvent(OpenGLWindow& window, const SDL_KeyboardEvent& e)
     {
         switch (e.keysym.sym)
         {
@@ -30,7 +30,7 @@ namespace sdl::Window::details
         }
     }
 
-    void onMouseMotionEvent(OpenGLWindow& window, SDL_MouseMotionEvent const& e) { }
+    void onMouseMotionEvent(OpenGLWindow& window, const SDL_MouseMotionEvent& e) { }
 }
 
 namespace sdl::Window
@@ -56,7 +56,7 @@ namespace sdl::Window
         SDL_SetHint(SDL_HINT_VIDEO_X11_NET_WM_BYPASS_COMPOSITOR, "0");
 #endif
 
-        Uint32 const flags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI;
+        const Uint32 flags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI;
         window.handle =
             SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, flags);
         if (window.handle == nullptr)

@@ -50,8 +50,6 @@ int main(int argc, char* argv[])
     GLuint vao = gl::VertexArray::create();
     GLuint vbo = gl::Buffer::create();
 
-    const unsigned int floatByteNum = sizeof(float);
-
     gl::Buffer::bind(GL_ARRAY_BUFFER, vbo);
     gl::Buffer::data(GL_ARRAY_BUFFER, triangle.size() * sizeof(Vertex), triangle.data(), GL_STATIC_DRAW);
 
@@ -80,8 +78,8 @@ int main(int argc, char* argv[])
     gl::Shader::attach(program, gl::Shader::Stage::Frag, "shaders/default.frag");
     gl::Shader::link(program);
 
-    glm::mat4 const identityMat = glm::mat4(1.0f);
-    glm::mat4 const modelMat = identityMat;
+    const glm::mat4 identityMat = glm::mat4(1.0f);
+    const glm::mat4 modelMat = identityMat;
 
     gl::Camera::Viewport = {0, 0, window.size.width, window.size.height};
 
@@ -100,7 +98,7 @@ int main(int argc, char* argv[])
         gl::Camera::Viewport.width = window.size.width;
         gl::Camera::Viewport.height = window.size.height;
 
-        auto const& [x, y, w, h] = gl::Camera::Viewport;
+        const auto& [x, y, w, h] = gl::Camera::Viewport;
         glViewport(x, y, w, h);
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

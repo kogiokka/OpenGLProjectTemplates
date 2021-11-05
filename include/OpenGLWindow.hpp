@@ -18,7 +18,7 @@ namespace sdl::Window
         Size size;
         bool isDone = false;
     };
-    OpenGLWindow create(std::string const& title, int width, int height);
+    OpenGLWindow create(const std::string& title, int width, int height);
     void destroy(OpenGLWindow& window);
     void swap(OpenGLWindow& window);
     void handleEvent(OpenGLWindow& window);

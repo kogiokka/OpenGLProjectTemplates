@@ -11,7 +11,7 @@ namespace gl::Shader::Uniform
 {
     namespace details
     {
-        int getLocation(GLuint programId, const std::string uniformName)
+        int getLocation(GLuint programId, const std::string& uniformName)
         {
             using namespace std;
 
@@ -22,7 +22,7 @@ namespace gl::Shader::Uniform
                 return locations[uniformName];
             }
 
-            GLchar const* name = uniformName.c_str();
+            const GLchar* name = uniformName.c_str();
             int loc = glGetUniformLocation(programId, name);
             if (loc == -1)
             {
@@ -35,7 +35,7 @@ namespace gl::Shader::Uniform
         }
     }
 
-    void matrix4fv(GLuint programId, const std::string& uniformName, glm::mat4 const& mat)
+    void matrix4fv(GLuint programId, const std::string& uniformName, const glm::mat4& mat)
     {
         glUniformMatrix4fv(details::getLocation(programId, uniformName), 1, GL_FALSE, glm::value_ptr(mat));
     }

@@ -8,16 +8,16 @@ namespace gl::Camera
 
     glm::mat4 view(glm::vec3 position, glm::vec3 center)
     {
-        static const glm::vec3 worldUp { 0.0f, 1.0f, 0.0f };
+        static const glm::vec3 worldUp{0.0f, 1.0f, 0.0f};
         return glm::lookAt(position, center, worldUp);
     }
 
     glm::mat4 orthographic(float fov, float near, float far)
     {
-        float const top = fov;
-        float const right = aspectRatio() * fov;
-        float const bottom = -top;
-        float const left = -right;
+        const float top = fov;
+        const float right = aspectRatio() * fov;
+        const float bottom = -top;
+        const float left = -right;
 
         return glm::ortho(left, right, bottom, top, near, far);
     }
