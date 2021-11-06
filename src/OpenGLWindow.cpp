@@ -38,7 +38,7 @@ namespace sdl::Window
     OpenGLWindow create(const std::string& title, int width, int height)
     {
         OpenGLWindow window;
-        window.size = {800, 600};
+        window.size = {width, height};
 
         if (SDL_Init(SDL_INIT_VIDEO) != 0)
         {

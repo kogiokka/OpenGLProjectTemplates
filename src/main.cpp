@@ -154,7 +154,7 @@ void paintGUI(sdl::Window::OpenGLWindow& window)
 
 int main(int argc, char* argv[])
 {
-    sdl::Window::OpenGLWindow window = sdl::Window::create("NTOU SDL2 Beginner Template", 800, 600);
+    sdl::Window::OpenGLWindow window = sdl::Window::create("NTOU SDL2 Beginner Template", 1200, 800);
 
     gladLoadGLLoader(SDL_GL_GetProcAddress);
 
