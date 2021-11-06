@@ -1,4 +1,7 @@
 #include "OpenGLWindow.hpp"
+#include "State.hpp"
+#include "UI.hpp"
+#include "World.hpp"
 #include "gl/Buffer.hpp"
 #include "gl/Camera.hpp"
 #include "gl/Shader.hpp"
@@ -15,119 +18,12 @@
 #include <iostream>
 #include <vector>
 
-static std::vector<Vertex> triangle = {
-    Vertex{
-        {-0.5f, -0.5f, 0.0f},
-        {1.0f, 0.0f, 0.0f},
-    },
-    Vertex{
-        {0.5f, -0.5f, 0.0f},
-        {0.0f, 1.0f, 0.0f},
-    },
-    Vertex{
-        {0.0f, 0.5f, 0.0f},
-        {0.0f, 0.0f, 1.0f},
-    },
-};
-
-void paintGUI(sdl::Window::OpenGLWindow& window)
-{
-    static bool show_VertexEditor = false;
-    static bool flag_NoBackground = true;
-    ImGuiWindowFlags flags = 0;
-
-    if (flag_NoBackground) flags |= ImGuiWindowFlags_NoBackground;
-
-#ifndef NDEBUG
-    static bool show_ImGuiDemo = false;
-#endif
-
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplSDL2_NewFrame(window.handle);
-
-    ImGui::NewFrame();
-
-#ifndef NDEBUG
-    if (show_ImGuiDemo)
-    {
-        ImGui::ShowDemoWindow(&show_ImGuiDemo);
-    }
-#endif
-
-    if (ImGui::BeginMainMenuBar())
-    {
-        if (ImGui::BeginMenu("Edit"))
-        {
-            if (ImGui::BeginMenu("Preferences"))
-            {
-                ImGui::MenuItem("ImGui Window", nullptr, false, false);
-                ImGui::Checkbox("No background", &flag_NoBackground);
-                ImGui::EndMenu();
-            }
-            ImGui::EndMenu();
-        }
-        if (ImGui::BeginMenu("View"))
-        {
-            ImGui::MenuItem("Vertex Editor", nullptr, &show_VertexEditor);
-#ifndef NDEBUG
-            ImGui::MenuItem("Dear ImGui Demo", nullptr, &show_ImGuiDemo);
-#endif
-            ImGui::EndMenu();
-        }
-        ImGui::EndMainMenuBar();
-    }
-
-    if (show_VertexEditor)
-    {
-        ImGui::SetNextWindowSize(ImVec2(350, 200), ImGuiCond_Once);
-        ImGui::Begin("Vertex Editor", &show_VertexEditor, flags);
-        if (ImGui::BeginTabBar("##vertex-editor-tabs"))
-        {
-            if (ImGui::BeginTabItem("Color"))
-            {
-                for (std::size_t i = 0; i < triangle.size(); i++)
-                {
-                    Vertex::Color& color = triangle[i].color;
-                    const GLintptr offset = i * sizeof(Vertex) + 1 * sizeof(Vertex::Position);
-                    const GLsizei size = sizeof(Vertex::Color);
-
-                    const std::string name = "Vertex " + std::to_string(i);
-                    if (ImGui::ColorEdit3(name.c_str(), color.ptr()))
-                    {
-                        gl::Buffer::subData(GL_ARRAY_BUFFER, offset, size, color.ptr());
-                    }
-                }
-                ImGui::EndTabItem();
-            }
-            if (ImGui::BeginTabItem("Position"))
-            {
-                for (std::size_t i = 0; i < triangle.size(); i++)
-                {
-                    Vertex::Position& pos = triangle[i].position;
-                    const GLintptr offset = i * sizeof(Vertex) + 0 * sizeof(Vertex::Position);
-                    const GLsizei size = sizeof(Vertex::Position);
-
-                    const std::string name = "Vertex " + std::to_string(i);
-                    if (ImGui::SliderFloat2(name.c_str(), pos.ptr(), -1.50f, 1.50f))
-                    {
-                        gl::Buffer::subData(GL_ARRAY_BUFFER, offset, size, pos.ptr());
-                    }
-                }
-                ImGui::EndTabItem();
-            }
-            ImGui::EndTabBar();
-        }
-        ImGui::End();
-    }
-
-    ImGui::Render(); // End of new frame
-
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-}
+State state;
 
 int main(int argc, char* argv[])
 {
-    sdl::Window::OpenGLWindow window = sdl::Window::create("NTOU SDL2 Beginner Template", 1200, 800);
+    sdl::Window::create("NTOU SDL2 Beginner Template", 1200, 800);
+    state.window = &window;
 
     gladLoadGLLoader(SDL_GL_GetProcAddress);
 
@@ -136,11 +32,17 @@ int main(int argc, char* argv[])
               << "Renderer:              " << glGetString(GL_RENDERER) << "\n"
               << "Vendor:                " << glGetString(GL_VENDOR) << std::endl;
 
+    World::create();
+    state.scene = &scene;
+
     GLuint vao = gl::VertexArray::create();
     GLuint vbo = gl::Buffer::create();
 
     gl::Buffer::bind(GL_ARRAY_BUFFER, vbo);
-    gl::Buffer::data(GL_ARRAY_BUFFER, triangle.size() * sizeof(Vertex), triangle.data(), GL_DYNAMIC_DRAW);
+    gl::Buffer::data(GL_ARRAY_BUFFER,
+                     state.scene->triangle.size() * sizeof(Vertex),
+                     state.scene->triangle.data(),
+                     GL_DYNAMIC_DRAW);
 
     using gl::VertexArray::Attrib;
 
@@ -154,16 +56,6 @@ int main(int argc, char* argv[])
 
     glEnable(GL_DEPTH_TEST);
     // glEnable(GL_CULL_FACE);
-
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGui_ImplSDL2_InitForOpenGL(window.handle, window.glContext);
-    ImGui_ImplOpenGL3_Init();
-    ImGuiStyle& style = ImGui::GetStyle();
-    style.WindowRounding = 5.0f;
-    style.FrameRounding = 3.0f;
-    style.FrameBorderSize = 1.0f;
-
     GLuint program = gl::Shader::create();
     gl::Shader::attach(program, gl::Shader::Stage::Vert, "shaders/default.vert");
     gl::Shader::attach(program, gl::Shader::Stage::Frag, "shaders/default.frag");
@@ -172,16 +64,27 @@ int main(int argc, char* argv[])
     const glm::mat4 identityMat = glm::mat4(1.0f);
     const glm::mat4 modelMat = identityMat;
 
-    gl::Camera::Viewport = {0, 0, window.size.width, window.size.height};
+    gl::Camera::Viewport = {0, 0, state.window->size.width, state.window->size.height};
 
     glm::vec3 position = glm::vec3(0.0f, 0.0f, 3.0f);
     glm::vec3 viewDir = glm::vec3(0.0f, 0.0f, -1.0f);
 
-    while (!window.isDone)
+    UI::create();
+
+    while (!state.window->shouldClose)
     {
-        sdl::Window::handleEvent(window);
-        gl::Camera::Viewport.width = window.size.width;
-        gl::Camera::Viewport.height = window.size.height;
+        sdl::Window::Event::poll();
+
+        for (auto it = std::cbegin(state.window->events); it != std::cend(state.window->events); it++)
+        {
+            sdl::Window::Event::alwaysProcess(*it);
+            UI::processEvent(*it);
+            if (UI::Var.GrabbingEvent) continue;
+            sdl::Window::Event::process(*it);
+        }
+
+        gl::Camera::Viewport.width = state.window->size.width;
+        gl::Camera::Viewport.height = state.window->size.height;
 
         const auto& [x, y, w, h] = gl::Camera::Viewport;
         glViewport(x, y, w, h);
@@ -196,15 +99,18 @@ int main(int argc, char* argv[])
         gl::Shader::Uniform::matrix4fv(program, "viewProjMat", projMat * viewMat);
 
         glDrawArrays(GL_TRIANGLES, 0, 3);
-        paintGUI(window);
+        UI::render();
 
-        sdl::Window::swap(window);
+        sdl::Window::swap();
     }
+
+    World::destroy();
+    UI::destroy();
 
     gl::Shader::destroy(program);
     gl::Buffer::destroy(vbo);
     gl::VertexArray::destroy(vao);
-    sdl::Window::destroy(window);
+    sdl::Window::destroy();
 
     SDL_Quit();
 

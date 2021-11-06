@@ -2,6 +2,7 @@
 
 #include <SDL.h>
 #include <string>
+#include <vector>
 
 namespace sdl::Window
 {
@@ -13,13 +14,23 @@ namespace sdl::Window
             int height;
         };
 
+        bool shouldClose = false;
         SDL_Window* handle = nullptr;
         SDL_GLContext glContext = nullptr;
-        Size size;
-        bool isDone = false;
+        Size size = {};
+        std::vector<SDL_Event> events = {};
     };
-    OpenGLWindow create(const std::string& title, int width, int height);
-    void destroy(OpenGLWindow& window);
-    void swap(OpenGLWindow& window);
-    void handleEvent(OpenGLWindow& window);
+
+    void create(const std::string& title, int width, int height);
+    void destroy();
+    void swap();
 }
+
+namespace sdl::Window::Event
+{
+    void poll();
+    void process(const SDL_Event& event);
+    void alwaysProcess(const SDL_Event& event);
+}
+
+extern sdl::Window::OpenGLWindow window;
