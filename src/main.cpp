@@ -12,27 +12,48 @@
 #include <SDL.h>
 
 #include <iostream>
+#include <type_traits> // std::is_standard_layout_v
 #include <vector>
 
+/* Standardy Layout Type
+ * https://en.cppreference.com/w/cpp/named_req/StandardLayoutType
+ *
+ * Make sure the elements are continuous in the memory.
+ */
 struct Vertex
 {
     struct Position
     {
         float x, y, z;
+        float* ptr() { return reinterpret_cast<float*>(this); }
+    };
+
+    struct Color
+    {
+        float r, g, b;
+        float* ptr() { return reinterpret_cast<float*>(this); }
     };
 
     Position position;
+    Color color;
 };
+
+static_assert(std::is_standard_layout_v<Vertex>);
+static_assert(std::is_standard_layout_v<Vertex::Position>);
+static_assert(std::is_standard_layout_v<Vertex::Color>);
 
 static std::vector<Vertex> triangle = {
     Vertex{
         {-0.5f, -0.5f, 0.0f},
+        {1.0f, 0.0f, 0.0f},
     },
     Vertex{
         {0.5f, -0.5f, 0.0f},
+        {0.0f, 1.0f, 0.0f},
     },
     Vertex{
         {0.0f, 0.5f, 0.0f},
+        {0.0f, 0.0f, 1.0f},
     },
 };
 
@@ -57,9 +78,11 @@ int main(int argc, char* argv[])
 
     gl::VertexArray::bind(vao);
     gl::VertexArray::enable(Attrib::Position);
+    gl::VertexArray::enable(Attrib::Color);
 
     gl::Buffer::bind(GL_ARRAY_BUFFER, vbo);
     gl::VertexArray::pointer(Attrib::Position, 3, GL_FLOAT, GL_TRUE, sizeof(Vertex), offsetof(Vertex, position));
+    gl::VertexArray::pointer(Attrib::Color, 3, GL_FLOAT, GL_TRUE, sizeof(Vertex), offsetof(Vertex, color));
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
