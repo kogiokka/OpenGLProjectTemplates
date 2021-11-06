@@ -1,8 +1,8 @@
 #include "OpenGLWindow.hpp"
-#include "gl/Vertex.hpp"
 #include "gl/Buffer.hpp"
 #include "gl/Camera.hpp"
 #include "gl/Shader.hpp"
+#include "gl/Vertex.hpp"
 #include "gl/VertexArray.hpp"
 
 #include "glad/glad.h"
@@ -92,7 +92,7 @@ void paintGUI(sdl::Window::OpenGLWindow& window)
                     const GLsizei size = sizeof(Vertex::Color);
 
                     const std::string name = "Vertex " + std::to_string(i);
-                    if (ImGui::ColorEdit3(name.c_str(), triangle[i].color.ptr()))
+                    if (ImGui::ColorEdit3(name.c_str(), color.ptr()))
                     {
                         gl::Buffer::subData(GL_ARRAY_BUFFER, offset, size, color.ptr());
                     }
