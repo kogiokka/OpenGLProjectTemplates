@@ -15,4 +15,9 @@ namespace gl::Buffer
     {
         glBufferData(target, size, data, usage);
     }
+
+    void subData(GLenum target, GLintptr offset, GLsizei size, const GLvoid* data)
+    {
+        glBufferSubData(target, offset, size, data);
+    }
 }

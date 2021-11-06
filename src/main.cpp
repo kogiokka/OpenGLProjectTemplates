@@ -57,6 +57,101 @@ static std::vector<Vertex> triangle = {
     },
 };
 
+void paintGUI(sdl::Window::OpenGLWindow& window)
+{
+    static bool show_VertexEditor = false;
+    static bool flag_NoBackground = true;
+    ImGuiWindowFlags flags = 0;
+
+    if (flag_NoBackground) flags |= ImGuiWindowFlags_NoBackground;
+
+#ifndef NDEBUG
+    static bool show_ImGuiDemo = false;
+#endif
+
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplSDL2_NewFrame(window.handle);
+
+    ImGui::NewFrame();
+
+#ifndef NDEBUG
+    if (show_ImGuiDemo)
+    {
+        ImGui::ShowDemoWindow(&show_ImGuiDemo);
+    }
+#endif
+
+    if (ImGui::BeginMainMenuBar())
+    {
+        if (ImGui::BeginMenu("Edit"))
+        {
+            if (ImGui::BeginMenu("Preferences"))
+            {
+                ImGui::MenuItem("ImGui Window", nullptr, false, false);
+                ImGui::Checkbox("No background", &flag_NoBackground);
+                ImGui::EndMenu();
+            }
+            ImGui::EndMenu();
+        }
+        if (ImGui::BeginMenu("View"))
+        {
+            ImGui::MenuItem("Vertex Editor", nullptr, &show_VertexEditor);
+#ifndef NDEBUG
+            ImGui::MenuItem("Dear ImGui Demo", nullptr, &show_ImGuiDemo);
+#endif
+            ImGui::EndMenu();
+        }
+        ImGui::EndMainMenuBar();
+    }
+
+    if (show_VertexEditor)
+    {
+        ImGui::SetNextWindowSize(ImVec2(350, 200), ImGuiCond_Once);
+        ImGui::Begin("Vertex Editor", &show_VertexEditor, flags);
+        if (ImGui::BeginTabBar("##vertex-editor-tabs"))
+        {
+            if (ImGui::BeginTabItem("Color"))
+            {
+                for (std::size_t i = 0; i < triangle.size(); i++)
+                {
+                    Vertex::Color& color = triangle[i].color;
+                    const GLintptr offset = i * sizeof(Vertex) + 1 * sizeof(Vertex::Position);
+                    const GLsizei size = sizeof(Vertex::Color);
+
+                    const std::string name = "Vertex " + std::to_string(i);
+                    if (ImGui::ColorEdit3(name.c_str(), triangle[i].color.ptr()))
+                    {
+                        gl::Buffer::subData(GL_ARRAY_BUFFER, offset, size, color.ptr());
+                    }
+                }
+                ImGui::EndTabItem();
+            }
+            if (ImGui::BeginTabItem("Position"))
+            {
+                for (std::size_t i = 0; i < triangle.size(); i++)
+                {
+                    Vertex::Position& pos = triangle[i].position;
+                    const GLintptr offset = i * sizeof(Vertex) + 0 * sizeof(Vertex::Position);
+                    const GLsizei size = sizeof(Vertex::Position);
+
+                    const std::string name = "Vertex " + std::to_string(i);
+                    if (ImGui::SliderFloat2(name.c_str(), pos.ptr(), -1.50f, 1.50f))
+                    {
+                        gl::Buffer::subData(GL_ARRAY_BUFFER, offset, size, pos.ptr());
+                    }
+                }
+                ImGui::EndTabItem();
+            }
+            ImGui::EndTabBar();
+        }
+        ImGui::End();
+    }
+
+    ImGui::Render(); // End of new frame
+
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
+
 int main(int argc, char* argv[])
 {
     sdl::Window::OpenGLWindow window = sdl::Window::create("NTOU SDL2 Beginner Template", 800, 600);
@@ -72,7 +167,7 @@ int main(int argc, char* argv[])
     GLuint vbo = gl::Buffer::create();
 
     gl::Buffer::bind(GL_ARRAY_BUFFER, vbo);
-    gl::Buffer::data(GL_ARRAY_BUFFER, triangle.size() * sizeof(Vertex), triangle.data(), GL_STATIC_DRAW);
+    gl::Buffer::data(GL_ARRAY_BUFFER, triangle.size() * sizeof(Vertex), triangle.data(), GL_DYNAMIC_DRAW);
 
     using gl::VertexArray::Attrib;
 
@@ -85,7 +180,7 @@ int main(int argc, char* argv[])
     gl::VertexArray::pointer(Attrib::Color, 3, GL_FLOAT, GL_TRUE, sizeof(Vertex), offsetof(Vertex, color));
 
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
+    // glEnable(GL_CULL_FACE);
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -111,12 +206,6 @@ int main(int argc, char* argv[])
 
     while (!window.isDone)
     {
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplSDL2_NewFrame(window.handle);
-        ImGui::NewFrame();
-        ImGui::ShowDemoWindow();
-        ImGui::Render();
-
         sdl::Window::handleEvent(window);
         gl::Camera::Viewport.width = window.size.width;
         gl::Camera::Viewport.height = window.size.height;
@@ -134,7 +223,7 @@ int main(int argc, char* argv[])
         gl::Shader::Uniform::matrix4fv(program, "viewProjMat", projMat * viewMat);
 
         glDrawArrays(GL_TRIANGLES, 0, 3);
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        paintGUI(window);
 
         sdl::Window::swap(window);
     }
