@@ -1,12 +1,11 @@
-#include "imgui.h"
-#include "imgui_impl_opengl3.h"
-#include "imgui_impl_sdl.h"
-
-#include "State.hpp"
 #include "UI.hpp"
+#include "State.hpp"
 #include "gl/Buffer.hpp"
 
 #include "glad/glad.h"
+#include "imgui.h"
+#include "imgui_impl_opengl3.h"
+#include "imgui_impl_sdl.h"
 
 #include <string>
 

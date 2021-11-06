@@ -102,9 +102,6 @@ namespace sdl::Window::Event
 
     void process(const SDL_Event& event)
     {
-        // ImGui_ImplSDL2_ProcessEvent(&(*it));
-        // ImGuiIO const& io = ImGui::GetIO();
-        // if (io.WantCaptureKeyboard || io.WantCaptureMouse) return;
         switch (event.type)
         {
             case SDL_KEYDOWN: details::onKeyDownEvent(event.key); break;

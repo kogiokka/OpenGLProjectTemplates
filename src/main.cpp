@@ -1,7 +1,6 @@
-#include "OpenGLWindow.hpp"
 #include "State.hpp"
 #include "UI.hpp"
-#include "World.hpp"
+
 #include "gl/Buffer.hpp"
 #include "gl/Camera.hpp"
 #include "gl/Shader.hpp"
@@ -9,10 +8,6 @@
 #include "gl/VertexArray.hpp"
 
 #include "glad/glad.h"
-#include "imgui.h"
-#include "imgui_impl_opengl3.h"
-#include "imgui_impl_sdl.h"
-
 #include <SDL.h>
 
 #include <iostream>
