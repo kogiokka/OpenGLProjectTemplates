@@ -1,4 +1,5 @@
 #include "OpenGLWindow.hpp"
+#include "gl/Vertex.hpp"
 #include "gl/Buffer.hpp"
 #include "gl/Camera.hpp"
 #include "gl/Shader.hpp"
@@ -12,35 +13,7 @@
 #include <SDL.h>
 
 #include <iostream>
-#include <type_traits> // std::is_standard_layout_v
 #include <vector>
-
-/* Standardy Layout Type
- * https://en.cppreference.com/w/cpp/named_req/StandardLayoutType
- *
- * Make sure the elements are continuous in the memory.
- */
-struct Vertex
-{
-    struct Position
-    {
-        float x, y, z;
-        float* ptr() { return reinterpret_cast<float*>(this); }
-    };
-
-    struct Color
-    {
-        float r, g, b;
-        float* ptr() { return reinterpret_cast<float*>(this); }
-    };
-
-    Position position;
-    Color color;
-};
-
-static_assert(std::is_standard_layout_v<Vertex>);
-static_assert(std::is_standard_layout_v<Vertex::Position>);
-static_assert(std::is_standard_layout_v<Vertex::Color>);
 
 static std::vector<Vertex> triangle = {
     Vertex{
