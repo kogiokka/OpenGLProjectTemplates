@@ -35,7 +35,7 @@ namespace sdl::Window::details
 
 namespace sdl::Window
 {
-    OpenGLWindow create(std::string const& title, int width, int height)
+    OpenGLWindow create(const std::string& title, int width, int height)
     {
         OpenGLWindow window;
         window.size = {800, 600};

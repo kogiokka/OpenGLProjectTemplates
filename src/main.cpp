@@ -116,10 +116,9 @@ int main(int argc, char* argv[])
         sdl::Window::swap(window);
     }
 
-    glDeleteBuffers(1, &vbo);
-    glDeleteVertexArrays(1, &vao);
-
     gl::Shader::destroy(program);
+    gl::Buffer::destroy(vbo);
+    gl::VertexArray::destroy(vao);
     sdl::Window::destroy(window);
 
     SDL_Quit();
