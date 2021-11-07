@@ -116,6 +116,12 @@ target_include_directories(triangle-example PRIVATE
     "ext/imgui/backends"
 )
 
+# Configure File ###############################################################
+## Let CMake define PROJECT_VERSION in C++ code for us, so we don't have to edit
+## multiple files when bumping version.
+configure_file(VERSION.hpp.in VERSION.hpp)
+target_include_directories(triangle-example PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")
+
 
 # Source Files #################################################################
 ## Collect source files and assign them to variables.

@@ -1,3 +1,5 @@
+#include "VERSION.hpp"
+
 #include "UI.hpp"
 #include "State.hpp"
 #include "gl/Buffer.hpp"
@@ -267,7 +269,7 @@ void ui::Window::About::render()
     ImGui::SetWindowFontScale(1.2f);
     ImGui::Text("NTOU OpenGL Template - Triangle");
     ImGui::SetWindowFontScale(1.0f);
-    ImGui::Text("Version %s", EXAMPLE_VERSION);
+    ImGui::Text("Version %s", PROJECT_VERSION);
     if (ImGui::BeginTabBar("TabBar##Window_About")) {
         ::ui::Window::About::AboutTab::render();
         ::ui::Window::About::ComponentsTab::render();

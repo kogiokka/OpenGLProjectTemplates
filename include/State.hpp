@@ -1,7 +1,5 @@
 #pragma once
 
-#define EXAMPLE_VERSION "1.20"
-
 #include "World.hpp"
 #include "sdl/OpenGLWindow.hpp"
 
