@@ -64,20 +64,21 @@ namespace details
             default: break;
         }
     }
-}
 
-namespace sdl::Window::Event
-{
-    void poll()
+    void sceneRoutine(const SDL_Event& event)
     {
-        window.events.clear();
-
-        SDL_Event e;
-        while (SDL_PollEvent(&e))
-            window.events.push_back(e);
+        switch (event.type)
+        {
+            case SDL_KEYDOWN: details::onKeyDownEvent(event.key); break;
+            case SDL_KEYUP: details::onKeyUpEvent(event.key); break;
+            case SDL_MOUSEBUTTONDOWN: details::onMouseButtonDownEvent(event.button); break;
+            case SDL_MOUSEBUTTONUP: details::onMouseButtonUpEvent(event.button); break;
+            case SDL_MOUSEMOTION: details::onMouseMotionEvent(event.motion); break;
+            case SDL_WINDOWEVENT: details::onWindowEvent(event.window); break;
+        }
     }
 
-    void alwaysProcess(const SDL_Event& event)
+    void globalRoutine(const SDL_Event& event)
     {
         switch (event.type)
         {
@@ -99,18 +100,24 @@ namespace sdl::Window::Event
                 break;
         }
     }
+}
 
-    void process(const SDL_Event& event)
+namespace sdl::Window::Event
+{
+    void poll()
     {
-        switch (event.type)
-        {
-            case SDL_KEYDOWN: details::onKeyDownEvent(event.key); break;
-            case SDL_KEYUP: details::onKeyUpEvent(event.key); break;
-            case SDL_MOUSEBUTTONDOWN: details::onMouseButtonDownEvent(event.button); break;
-            case SDL_MOUSEBUTTONUP: details::onMouseButtonUpEvent(event.button); break;
-            case SDL_MOUSEMOTION: details::onMouseMotionEvent(event.motion); break;
-            case SDL_WINDOWEVENT: details::onWindowEvent(event.window); break;
-        }
+        window.events.clear();
+
+        SDL_Event e;
+        while (SDL_PollEvent(&e))
+            window.events.push_back(e);
+    }
+
+    void process(const SDL_Event& event, bool bypassSceneRoutine)
+    {
+        details::globalRoutine(event);
+        if (bypassSceneRoutine) return;
+        details::sceneRoutine(event);
     }
 }
 

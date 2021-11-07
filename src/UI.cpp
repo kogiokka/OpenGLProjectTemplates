@@ -86,7 +86,7 @@ void UI::processEvent(const SDL_Event& e)
     ImGui_ImplSDL2_ProcessEvent(&e);
     const ImGuiIO& io = ImGui::GetIO();
 
-    Var.GrabbingEvent = io.WantCaptureKeyboard || io.WantCaptureMouse;
+    Var.WantCaptureEvent = io.WantCaptureKeyboard || io.WantCaptureMouse;
 }
 
 void UI::destroy() { }

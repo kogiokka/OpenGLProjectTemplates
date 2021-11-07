@@ -6,7 +6,7 @@ namespace UI
 {
     struct Var
     {
-        bool GrabbingEvent = false;
+        bool WantCaptureEvent = false;
         bool Window_NoBackground = false;
 
 #ifndef NDEBUG

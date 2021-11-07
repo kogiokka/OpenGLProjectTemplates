@@ -29,8 +29,7 @@ namespace sdl::Window
 namespace sdl::Window::Event
 {
     void poll();
-    void process(const SDL_Event& event);
-    void alwaysProcess(const SDL_Event& event);
+    void process(const SDL_Event& event, bool bypassSceneRoutine);
 }
 
 extern sdl::Window::OpenGLWindow window;

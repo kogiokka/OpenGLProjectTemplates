@@ -34,10 +34,8 @@ int main(int argc, char* argv[])
     GLuint vbo = gl::Buffer::create();
 
     gl::Buffer::bind(GL_ARRAY_BUFFER, vbo);
-    gl::Buffer::data(GL_ARRAY_BUFFER,
-                     state.scene->triangle.size() * sizeof(Vertex),
-                     state.scene->triangle.data(),
-                     GL_DYNAMIC_DRAW);
+    gl::Buffer::data(
+        GL_ARRAY_BUFFER, state.scene->triangle.size() * sizeof(Vertex), state.scene->triangle.data(), GL_DYNAMIC_DRAW);
 
     using gl::VertexArray::Attrib;
 
@@ -72,10 +70,8 @@ int main(int argc, char* argv[])
 
         for (auto it = std::cbegin(state.window->events); it != std::cend(state.window->events); it++)
         {
-            sdl::Window::Event::alwaysProcess(*it);
             UI::processEvent(*it);
-            if (UI::Var.GrabbingEvent) continue;
-            sdl::Window::Event::process(*it);
+            sdl::Window::Event::process(*it, UI::Var.WantCaptureEvent);
         }
 
         gl::Camera::Viewport.width = state.window->size.width;
