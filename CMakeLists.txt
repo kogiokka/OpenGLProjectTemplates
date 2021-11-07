@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.15 FATAL_ERROR)
 
 # Define Project ###############################################################
-project("NTOU SDL2 Beginner Template"
+project("NTOU OpenGL Beginner Template"
     VERSION 1.0.0
     DESCRIPTION "A quick OpenGL and SDL2 setup for beginners."
 )
@@ -130,6 +130,7 @@ file(GLOB ImGui_Impl_Source
 file(GLOB My_Source CONFIGURE_DEPENDS
     "src/*.cpp"
     "src/gl/*.cpp"
+    "src/sdl/*.cpp"
 )
 
 ## Assign source files to the binary targets (sdl2-example, glad, and imgui).

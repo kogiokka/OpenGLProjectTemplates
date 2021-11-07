@@ -1,4 +1,4 @@
-#include "OpenGLWindow.hpp"
+#include "sdl/OpenGLWindow.hpp"
 
 #include <SDL.h>
 
