@@ -17,6 +17,15 @@ namespace UI
             bool Visible = false;
             int WindowFlags = 0;
         } VertexEditor;
+
+        struct Preferences {
+            enum Theme {
+                Light,
+                Dark,
+                Classic,
+            };
+            Theme Theme = Theme::Dark;
+        } Preferences;
     };
 
     extern struct Var Var;

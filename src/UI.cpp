@@ -12,11 +12,23 @@
 namespace UI
 {
     struct Var Var;
-    void render();
 
+    void render();
     namespace MenuBar
     {
         void render();
+        namespace Edit
+        {
+            void render();
+            namespace Preferences
+            {
+                void render();
+            }
+        }
+        namespace View
+        {
+            void render();
+        }
     }
     namespace VertexEditor
     {
@@ -58,8 +70,20 @@ void UI::render()
 {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplSDL2_NewFrame(state.window->handle);
-
     ImGui::NewFrame();
+
+    switch (Var.Preferences.Theme) {
+    case Var::Preferences::Theme::Light:
+        ImGui::StyleColorsLight();
+        break;
+    case Var::Preferences::Theme::Dark:
+        ImGui::StyleColorsDark();
+        break;
+    case Var::Preferences::Theme::Classic:
+        ImGui::StyleColorsClassic();
+        break;
+    }
+
     ::UI::MenuBar::render();
 
     Var.VertexEditor.WindowFlags = 0;
@@ -94,22 +118,48 @@ void UI::destroy() { }
 void UI::MenuBar::render()
 {
     if (ImGui::BeginMainMenuBar()) {
-        if (ImGui::BeginMenu("Edit")) {
-            if (ImGui::BeginMenu("Preferences")) {
-                ImGui::MenuItem("ImGui Window", nullptr, false, false);
-                ImGui::Checkbox("No background", &Var.Window_NoBackground);
-                ImGui::EndMenu();
-            }
-            ImGui::EndMenu();
-        }
-        if (ImGui::BeginMenu("View")) {
-            ImGui::MenuItem("Vertex Editor", nullptr, &Var.VertexEditor.Visible);
-#ifndef NDEBUG
-            ImGui::MenuItem("Dear ImGui Demo", nullptr, &Var.DemoWindow.Visible);
-#endif
-            ImGui::EndMenu();
-        }
+        ::UI::MenuBar::Edit::render();
+        ::UI::MenuBar::View::render();
         ImGui::EndMainMenuBar();
+    }
+}
+
+void UI::MenuBar::Edit::render()
+{
+    if (ImGui::BeginMenu("Edit##menubar-edit")) {
+        ::UI::MenuBar::Edit::Preferences::render();
+        ImGui::EndMenu();
+    }
+}
+
+void UI::MenuBar::Edit::Preferences::render()
+{
+    if (ImGui::BeginMenu("Preferences##menubar-edit-prefer")) {
+        ImGui::MenuItem("Theme##menubar-edit-prefer-theme", nullptr, false, false);
+        if (ImGui::MenuItem("Light", nullptr)) {
+            Var.Preferences.Theme = UI::Var::Preferences::Theme::Light;
+        };
+        if (ImGui::MenuItem("Dark", nullptr)) {
+            Var.Preferences.Theme = UI::Var::Preferences::Theme::Dark;
+        };
+        if (ImGui::MenuItem("Classic", nullptr)) {
+            Var.Preferences.Theme = UI::Var::Preferences::Theme::Classic;
+        };
+        ImGui::Separator();
+        ImGui::MenuItem("Window Options##menubar-edit-prefer-window_options", nullptr, false, false);
+        ImGui::Checkbox("No background", &Var.Window_NoBackground);
+        ImGui::EndMenu();
+    }
+}
+
+void UI::MenuBar::View::render()
+{
+    if (ImGui::BeginMenu("View##menubar-view")) {
+        ImGui::MenuItem("Vertex Editor", nullptr, &Var.VertexEditor.Visible);
+#ifndef NDEBUG
+        ImGui::MenuItem("Dear ImGui Demo", nullptr, &Var.DemoWindow.Visible);
+#endif
+        ImGui::EndMenu();
     }
 }
 
@@ -125,8 +175,8 @@ void UI::VertexEditor::render()
     ImGui::SetNextWindowSize(ImVec2(350, 200), ImGuiCond_Once);
     ImGui::Begin("Vertex Editor", &Var.VertexEditor.Visible, Var.VertexEditor.WindowFlags);
     if (ImGui::BeginTabBar("##vertex-editor-tabs")) {
-        ColorTab::render();
-        VertexTab::render();
+        ::UI::VertexEditor::ColorTab::render();
+        ::UI::VertexEditor::VertexTab::render();
         ImGui::EndTabBar();
     }
     ImGui::End();
