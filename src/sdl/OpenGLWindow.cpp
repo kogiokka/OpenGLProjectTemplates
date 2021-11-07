@@ -2,6 +2,7 @@
 #include "State.hpp"
 
 #include <SDL.h>
+#include <glad/glad.h>
 
 #include <cstdlib> // std::exit
 #include <iostream>
@@ -172,6 +173,8 @@ namespace sdl::Window
         window.glContext = SDL_GL_CreateContext(window.handle);
         SDL_GL_MakeCurrent(window.handle, window.glContext);
         SDL_GL_SetSwapInterval(1);
+
+        gladLoadGLLoader(SDL_GL_GetProcAddress);
     }
 
     void destroy()

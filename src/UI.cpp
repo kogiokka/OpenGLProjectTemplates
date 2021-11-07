@@ -219,11 +219,11 @@ void ui::Window::VertexEditor::render()
 
 void ui::Window::VertexEditor::VertexTab::render()
 {
-    auto& triangle = state.world->triangle;
+    auto& verts = state.world->triangle->vertices;
 
     if (ImGui::BeginTabItem("Position")) {
-        for (std::size_t i = 0; i < triangle.size(); i++) {
-            Vertex::Position& pos = triangle[i].position;
+        for (std::size_t i = 0; i < verts.size(); i++) {
+            Vertex::Position& pos = verts[i].position;
             const GLintptr offset = i * sizeof(Vertex) + 0 * sizeof(Vertex::Position);
             const GLsizei size = sizeof(Vertex::Position);
 
@@ -238,11 +238,11 @@ void ui::Window::VertexEditor::VertexTab::render()
 
 void ui::Window::VertexEditor::ColorTab::render()
 {
-    auto& triangle = state.world->triangle;
+    auto& verts = state.world->triangle->vertices;
 
     if (ImGui::BeginTabItem("Color")) {
-        for (std::size_t i = 0; i < triangle.size(); i++) {
-            Vertex::Color& color = triangle[i].color;
+        for (std::size_t i = 0; i < verts.size(); i++) {
+            Vertex::Color& color = verts[i].color;
             const GLintptr offset = i * sizeof(Vertex) + 1 * sizeof(Vertex::Position);
             const GLsizei size = sizeof(Vertex::Color);
 

@@ -30,4 +30,5 @@ namespace sdl::Window::Event
     void process(const SDL_Event& event, bool bypassSceneRoutine);
 }
 
+// Global window
 extern sdl::Window::OpenGLWindow window;

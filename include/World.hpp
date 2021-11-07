@@ -1,13 +1,19 @@
 #pragma once
 
 #include "gl/Vertex.hpp"
-#include <vector>
 
-struct World {
-    std::vector<Vertex> triangle;
+#include <array>
 
-    static void create();
-    static void destroy();
+struct Triangle {
+    std::array<Vertex, 3> vertices;
 };
 
+struct World {
+    Triangle* triangle;
+
+    void create();
+    void destroy();
+};
+
+// Global world
 extern World world;

@@ -41,9 +41,9 @@ int main(int argc, char* argv[])
     gl::VertexArray::enable(Attrib::Position);
     gl::VertexArray::enable(Attrib::Color);
 
+    const auto& verts = state.world->triangle->vertices;
     gl::Buffer::bind(GL_ARRAY_BUFFER, vbo);
-    gl::Buffer::data(GL_ARRAY_BUFFER, state.world->triangle.size() * sizeof(Vertex), state.world->triangle.data(),
-                     GL_DYNAMIC_DRAW);
+    gl::Buffer::data(GL_ARRAY_BUFFER, verts.size() * sizeof(Vertex), verts.data(), GL_DYNAMIC_DRAW);
     gl::VertexArray::pointer(Attrib::Position, 3, GL_FLOAT, GL_TRUE, sizeof(Vertex), offsetof(Vertex, position));
     gl::VertexArray::pointer(Attrib::Color, 3, GL_FLOAT, GL_TRUE, sizeof(Vertex), offsetof(Vertex, color));
 
@@ -96,10 +96,9 @@ void init()
     state.world = &world;
 
     sdl::Window::create("NTOU SDL2 Beginner Template", 1200, 800);
-    gladLoadGLLoader(SDL_GL_GetProcAddress);
-
     ui::create();
-    World::create();
+
+    state.world->create();
 }
 
 void update()
@@ -113,8 +112,8 @@ void update()
 
 void destroy()
 {
-    World::destroy();
-    ui::destroy();
+    state.world->destroy();
 
+    ui::destroy();
     sdl::Window::destroy();
 }
