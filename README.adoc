@@ -2,7 +2,7 @@
 
 // Settings
 :url-vcpkg: https://github.com/microsoft/vcpkg
-:url-vcpkg-readme: {url-vcpkg}/README.md
+:url-vcpkg-readme: {url-vcpkg}/blob/master/README.md
 
 An OpenGL template program for students learning Computer Graphics.
 
@@ -12,7 +12,7 @@ This program uses the following libraries: `SDL2`, `glm`, `Dear ImGui`, and `Gla
 
 Dear ImGui and Glad has been shipped with this project and placed inside `ext/` directory.
 `SDl2` and `glm` requires installation. We recommend {url-vcpkg}[`vcpkg`] for C++ package management.
-See {url-vcpkg}/README.md[Vcpkg's README.md] to get started.
+See {url-vcpkg-readme}[Vcpkg's README.md] to get started.
 
 === From Vcpkg
 
