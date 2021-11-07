@@ -17,7 +17,7 @@ namespace ui
             struct About {
                 bool Visible = false;
                 int WindowFlags = 0;
-                ImVec2 ChildSize = ImVec2(350, 200);
+                ImVec2 ChildSize = ImVec2(350, 300);
             } About;
 #ifndef NDEBUG
             struct Demo {

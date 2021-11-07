@@ -284,7 +284,7 @@ void ui::Window::About::AboutTab::render()
         ImGui::TextWrapped("An OpenGL template program for students learning Computer Graphics.\n"
                            "\n"
                            "Developed at:\n"
-                           "Nation Taiwan Ocean University\n"
+                           "National Taiwan Ocean University\n"
                            "\n"
                            "Copyright 2021, NTOU CSE 503 Authors\n");
         ImGui::EndChild();
@@ -300,13 +300,19 @@ void ui::Window::About::ComponentsTab::render()
                     "Version %d.%d.%d\n"
                     "https://www.libsdl.org/\n",
                     SDL_MAJOR_VERSION, SDL_MINOR_VERSION, SDL_PATCHLEVEL);
-        ImGui::Dummy(ImVec2(10, 10));
+        ImGui::Text(" ");
         ImGui::Separator();
         ImGui::Text("Dear ImGui\n"
                     "Version %s\n"
                     "https://github.com/ocornut/imgui\n",
                     IMGUI_VERSION);
-        ImGui::Dummy(ImVec2(10, 10));
+        ImGui::Text(" ");
+        ImGui::Separator();
+        ImGui::Text("GLM\n"
+                    "Version %d.%d.%d\n"
+                    "https://github.com/g-truc/glm\n",
+                    GLM_VERSION_MAJOR, GLM_VERSION_MINOR, GLM_VERSION_PATCH);
+        ImGui::Text(" ");
         ImGui::Separator();
         ImGui::Text("Glad\n"
                     "Version 0.1.34\n"
