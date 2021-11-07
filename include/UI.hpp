@@ -1,5 +1,6 @@
 #pragma once
 
+#include "imgui.h"
 #include <SDL.h>
 
 namespace UI
@@ -8,15 +9,22 @@ namespace UI
         bool WantCaptureEvent = false;
         bool Window_NoBackground = false;
 
+        struct Window {
+            struct VertexEditor {
+                bool Visible = false;
+                int WindowFlags = 0;
+            } VertexEditor;
+            struct About {
+                bool Visible = false;
+                int WindowFlags = 0;
+                ImVec2 ChildSize = ImVec2(350, 200);
+            } About;
 #ifndef NDEBUG
-        struct DemoWindow {
-            bool Visible = false;
-        } DemoWindow;
+            struct Demo {
+                bool Visible = false;
+            } Demo;
 #endif
-        struct VertexEditor {
-            bool Visible = false;
-            int WindowFlags = 0;
-        } VertexEditor;
+        } Window;
 
         struct Preferences {
             enum Theme {
