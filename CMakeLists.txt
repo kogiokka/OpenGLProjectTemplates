@@ -9,7 +9,7 @@ project("NTOU OpenGL Template - Triangle"
 # Create Binary Targets ########################################################
 
 ## The executable
-add_executable(sdl2-example)
+add_executable(triangle-example)
 
 ## Static libraries
 ## These libraries will be consumed by our executable at the end of build.
@@ -20,7 +20,7 @@ add_library(glad STATIC)
 
 ## Set C++ standard. Require C++17.
 ## Turn off compiler extensions for cross-platform portability.
-set_target_properties(sdl2-example imgui
+set_target_properties(triangle-example imgui
     PROPERTIES
         CXX_STANDARD 17
         CXX_STANDARD_REQUIRED ON
@@ -39,7 +39,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     list(APPEND CompileOptions -Wall -Wextra -pedantic-errors)
     list(APPEND CompileOptions_Debug -ggdb)
     list(APPEND CompileOptions_Release)
-    target_compile_definitions(sdl2-example PRIVATE $<$<CONFIG:Debug>:_GLIBCXX_DEBUG>)
+    target_compile_definitions(triangle-example PRIVATE $<$<CONFIG:Debug>:_GLIBCXX_DEBUG>)
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     list(APPEND CompileOptions -Wall -Wextra -pedantic-errors)
     list(APPEND CompileOptions_Debug)
@@ -64,9 +64,9 @@ endif()
     See details about generator-expressions at
         https://cmake.org/cmake/help/latest/manual/cmake-generator-expressions.7.html
 ]]
-target_compile_options(sdl2-example PRIVATE ${CompileOptions})
-target_compile_options(sdl2-example PRIVATE $<$<CONFIG:Debug>:${CompileOptions_Debug}>)
-target_compile_options(sdl2-example PRIVATE $<$<CONFIG:Release>:${CompileOptions_Release}>)
+target_compile_options(triangle-example PRIVATE ${CompileOptions})
+target_compile_options(triangle-example PRIVATE $<$<CONFIG:Debug>:${CompileOptions_Debug}>)
+target_compile_options(triangle-example PRIVATE $<$<CONFIG:Release>:${CompileOptions_Release}>)
 
 
 # Build Information ############################################################
@@ -111,7 +111,7 @@ find_package(glm REQUIRED)
 ## with their consumer.
 target_include_directories(imgui PUBLIC "ext/imgui")
 target_include_directories(glad PUBLIC "ext/glad/include")
-target_include_directories(sdl2-example PRIVATE
+target_include_directories(triangle-example PRIVATE
     "include"
     "ext/imgui/backends"
 )
@@ -133,10 +133,10 @@ file(GLOB My_Source CONFIGURE_DEPENDS
     "src/sdl/*.cpp"
 )
 
-## Assign source files to the binary targets (sdl2-example, glad, and imgui).
+## Assign source files to the binary targets (triangle-example, glad, and imgui).
 target_sources(glad PRIVATE ${GLAD_Source})
 target_sources(imgui PRIVATE ${ImGui_Source})
-target_sources(sdl2-example PRIVATE
+target_sources(triangle-example PRIVATE
     ${My_Source}
     ${ImGui_Impl_Source} # Compile them with your source because they need SDL2 headers
 )
@@ -145,7 +145,7 @@ target_sources(sdl2-example PRIVATE
 ## GLAD use `dlopen` and `dlclose` functions in some environments. Link GLAD
 ## library with `CMAKE_DL_LIBS` and CMake will take care of it.
 target_link_libraries(glad PRIVATE ${CMAKE_DL_LIBS})
-target_link_libraries(sdl2-example PRIVATE
+target_link_libraries(triangle-example PRIVATE
     glad
     imgui
     SDL2::SDL2
@@ -155,10 +155,10 @@ target_link_libraries(sdl2-example PRIVATE
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 9)
-        target_link_libraries(sdl2-example PRIVATE stdc++fs) # C++ filesystem
+        target_link_libraries(triangle-example PRIVATE stdc++fs) # C++ filesystem
     endif()
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-    target_link_libraries(sdl2-example PRIVATE SDL2::SDL2main)
+    target_link_libraries(triangle-example PRIVATE SDL2::SDL2main)
 endif()
 
 if (MINGW)
@@ -174,15 +174,15 @@ endif()
 
     NOTICE: Enable Developer Mode on MS Windows to create symbolic links.
 ]]
-add_custom_command(TARGET sdl2-example POST_BUILD
+add_custom_command(TARGET triangle-example POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E create_symlink
         "${CMAKE_SOURCE_DIR}/shaders"
-        "$<TARGET_FILE_DIR:sdl2-example>/shaders"
+        "$<TARGET_FILE_DIR:triangle-example>/shaders"
     COMMAND ${CMAKE_COMMAND} -E make_directory
-        "$<TARGET_FILE_DIR:sdl2-example>/res/imgui/misc"
+        "$<TARGET_FILE_DIR:triangle-example>/res/imgui/misc"
     COMMAND ${CMAKE_COMMAND} -E create_symlink
         "${CMAKE_SOURCE_DIR}/ext/imgui/misc/fonts"
-        "$<TARGET_FILE_DIR:sdl2-example>/res/imgui/misc/fonts"
+        "$<TARGET_FILE_DIR:triangle-example>/res/imgui/misc/fonts"
     DEPENDS
         "${CMAKE_SOURCE_DIR}/shaders" # Make sure the directory exists
     COMMENT "Creating symlink from build tree to project resources..."
