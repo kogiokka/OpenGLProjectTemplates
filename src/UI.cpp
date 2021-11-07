@@ -98,12 +98,15 @@ void ui::render()
     switch (Var.Preferences.Theme) {
     case Var::Preferences::Theme::Light:
         ImGui::StyleColorsLight();
+        state.world->skyColor = glm::vec3(0.969, 0.929, 0.831);
         break;
     case Var::Preferences::Theme::Dark:
         ImGui::StyleColorsDark();
+        state.world->skyColor = glm::vec3(0.1, 0.1, 0.1);
         break;
     case Var::Preferences::Theme::Classic:
         ImGui::StyleColorsClassic();
+        state.world->skyColor = glm::vec3(0.078, 0.078, 0.137);
         break;
     }
 

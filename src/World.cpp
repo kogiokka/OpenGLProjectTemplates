@@ -19,6 +19,8 @@ void World::create()
             { 0.0f, 0.0f, 1.0f },
         },
     };
+
+    world.skyColor = glm::vec3(0.1f, 0.1f, 0.1f);
 }
 
 void World::destroy()

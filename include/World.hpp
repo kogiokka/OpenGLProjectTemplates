@@ -1,6 +1,7 @@
 #pragma once
-
 #include "gl/Vertex.hpp"
+
+#include <glm/glm.hpp>
 
 #include <array>
 
@@ -10,6 +11,7 @@ struct Triangle {
 
 struct World {
     Triangle* triangle;
+    glm::vec3 skyColor;
 
     void create();
     void destroy();

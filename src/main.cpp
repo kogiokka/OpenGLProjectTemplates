@@ -66,8 +66,9 @@ int main(int argc, char* argv[])
         gl::Camera::Viewport.height = state.window->size.height;
 
         const auto& [x, y, w, h] = gl::Camera::Viewport;
+        const glm::vec3& clearColor = state.world->skyColor;
         glViewport(x, y, w, h);
-        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+        glClearColor(clearColor.r, clearColor.g, clearColor.b, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glBindVertexArray(vao);
 
