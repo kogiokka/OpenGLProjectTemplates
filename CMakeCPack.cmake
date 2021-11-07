@@ -1,5 +1,6 @@
 # Replace spaces in project name with underscores.
-string(REPLACE " " "_" PackageName "${PROJECT_NAME}")
+string(REPLACE " - " "-" PackageName "${PROJECT_NAME}")
+string(REPLACE " " "_" PackageName "${PackageName}")
 
 set(CPACK_PACKAGE_NAME "${PackageName}")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "${PROJECT_DESCRIPTION}")

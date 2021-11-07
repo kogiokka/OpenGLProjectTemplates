@@ -265,7 +265,7 @@ void ui::Window::About::render()
 
     ImGui::Begin("About##Window_About", &Var.Window.About.Visible, Var.Window.About.WindowFlags);
     ImGui::SetWindowFontScale(1.2f);
-    ImGui::Text("NTOU OpenGL Example - Triangle");
+    ImGui::Text("NTOU OpenGL Template - Triangle");
     ImGui::SetWindowFontScale(1.0f);
     ImGui::Text("Version %s", EXAMPLE_VERSION);
     if (ImGui::BeginTabBar("TabBar##Window_About")) {

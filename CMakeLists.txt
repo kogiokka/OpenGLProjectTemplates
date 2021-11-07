@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.15 FATAL_ERROR)
 
 # Define Project ###############################################################
-project("NTOU OpenGL Beginner Template"
+project("NTOU OpenGL Template - Triangle"
     VERSION 1.10
     DESCRIPTION "A quick OpenGL and SDL2 setup for beginners."
 )
