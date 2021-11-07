@@ -301,10 +301,17 @@ void ui::Window::About::ComponentsTab::render()
                     "https://www.libsdl.org/\n",
                     SDL_MAJOR_VERSION, SDL_MINOR_VERSION, SDL_PATCHLEVEL);
         ImGui::Dummy(ImVec2(10, 10));
+        ImGui::Separator();
         ImGui::Text("Dear ImGui\n"
                     "Version %s\n"
                     "https://github.com/ocornut/imgui\n",
                     IMGUI_VERSION);
+        ImGui::Dummy(ImVec2(10, 10));
+        ImGui::Separator();
+        ImGui::Text("Glad\n"
+                    "Version 0.1.34\n"
+                    "OpenGL 4.6 Core profile\n"
+                    "https://glad.dav1d.de/\n");
         ImGui::EndChild();
         ImGui::EndTabItem();
     }
