@@ -4,8 +4,7 @@
 
 namespace gl::VertexArray
 {
-    enum Attrib : int
-    {
+    enum Attrib : int {
         Position = 0,
         Color,
     };

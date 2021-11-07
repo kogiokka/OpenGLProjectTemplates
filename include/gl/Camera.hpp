@@ -5,8 +5,7 @@
 
 namespace gl::Camera
 {
-    struct Viewport
-    {
+    struct Viewport {
         int x;
         int y;
         int width;

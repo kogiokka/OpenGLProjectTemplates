@@ -60,20 +60,17 @@ void UI::render()
     ::UI::MenuBar::render();
 
     Var.VertexEditor.WindowFlags = 0;
-    if (Var.Window_NoBackground)
-    {
+    if (Var.Window_NoBackground) {
         Var.VertexEditor.WindowFlags |= ImGuiWindowFlags_NoBackground;
     }
 
 #ifndef NDEBUG
-    if (Var.DemoWindow.Visible)
-    {
+    if (Var.DemoWindow.Visible) {
         ::UI::DemoWindow::render();
     }
 #endif
 
-    if (Var.VertexEditor.Visible)
-    {
+    if (Var.VertexEditor.Visible) {
         ::UI::VertexEditor::render();
     }
 
@@ -93,20 +90,16 @@ void UI::destroy() { }
 
 void UI::MenuBar::render()
 {
-    if (ImGui::BeginMainMenuBar())
-    {
-        if (ImGui::BeginMenu("Edit"))
-        {
-            if (ImGui::BeginMenu("Preferences"))
-            {
+    if (ImGui::BeginMainMenuBar()) {
+        if (ImGui::BeginMenu("Edit")) {
+            if (ImGui::BeginMenu("Preferences")) {
                 ImGui::MenuItem("ImGui Window", nullptr, false, false);
                 ImGui::Checkbox("No background", &Var.Window_NoBackground);
                 ImGui::EndMenu();
             }
             ImGui::EndMenu();
         }
-        if (ImGui::BeginMenu("View"))
-        {
+        if (ImGui::BeginMenu("View")) {
             ImGui::MenuItem("Vertex Editor", nullptr, &Var.VertexEditor.Visible);
 #ifndef NDEBUG
             ImGui::MenuItem("Dear ImGui Demo", nullptr, &Var.DemoWindow.Visible);
@@ -118,15 +111,17 @@ void UI::MenuBar::render()
 }
 
 #ifndef NDEBUG
-void UI::DemoWindow::render() { ImGui::ShowDemoWindow(&Var.DemoWindow.Visible); }
+void UI::DemoWindow::render()
+{
+    ImGui::ShowDemoWindow(&Var.DemoWindow.Visible);
+}
 #endif
 
 void UI::VertexEditor::render()
 {
     ImGui::SetNextWindowSize(ImVec2(350, 200), ImGuiCond_Once);
     ImGui::Begin("Vertex Editor", &Var.VertexEditor.Visible, Var.VertexEditor.WindowFlags);
-    if (ImGui::BeginTabBar("##vertex-editor-tabs"))
-    {
+    if (ImGui::BeginTabBar("##vertex-editor-tabs")) {
         ColorTab::render();
         VertexTab::render();
         ImGui::EndTabBar();
@@ -138,17 +133,14 @@ void UI::VertexEditor::VertexTab::render()
 {
     auto& triangle = state.scene->triangle;
 
-    if (ImGui::BeginTabItem("Position"))
-    {
-        for (std::size_t i = 0; i < triangle.size(); i++)
-        {
+    if (ImGui::BeginTabItem("Position")) {
+        for (std::size_t i = 0; i < triangle.size(); i++) {
             Vertex::Position& pos = triangle[i].position;
             const GLintptr offset = i * sizeof(Vertex) + 0 * sizeof(Vertex::Position);
             const GLsizei size = sizeof(Vertex::Position);
 
             const std::string name = "Vertex " + std::to_string(i);
-            if (ImGui::SliderFloat2(name.c_str(), pos.ptr(), -1.50f, 1.50f))
-            {
+            if (ImGui::SliderFloat2(name.c_str(), pos.ptr(), -1.50f, 1.50f)) {
                 gl::Buffer::subData(GL_ARRAY_BUFFER, offset, size, pos.ptr());
             }
         }
@@ -160,17 +152,14 @@ void UI::VertexEditor::ColorTab::render()
 {
     auto& triangle = state.scene->triangle;
 
-    if (ImGui::BeginTabItem("Color"))
-    {
-        for (std::size_t i = 0; i < triangle.size(); i++)
-        {
+    if (ImGui::BeginTabItem("Color")) {
+        for (std::size_t i = 0; i < triangle.size(); i++) {
             Vertex::Color& color = triangle[i].color;
             const GLintptr offset = i * sizeof(Vertex) + 1 * sizeof(Vertex::Position);
             const GLsizei size = sizeof(Vertex::Color);
 
             const std::string name = "Vertex " + std::to_string(i);
-            if (ImGui::ColorEdit3(name.c_str(), color.ptr()))
-            {
+            if (ImGui::ColorEdit3(name.c_str(), color.ptr())) {
                 gl::Buffer::subData(GL_ARRAY_BUFFER, offset, size, color.ptr());
             }
         }

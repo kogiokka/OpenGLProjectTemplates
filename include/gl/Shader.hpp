@@ -7,8 +7,7 @@
 
 namespace gl::Shader
 {
-    enum Stage : GLenum
-    {
+    enum Stage : GLenum {
         Vert = GL_VERTEX_SHADER,
         Tesc = GL_TESS_CONTROL_SHADER,
         Tese = GL_TESS_EVALUATION_SHADER,

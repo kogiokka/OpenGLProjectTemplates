@@ -6,16 +6,13 @@
  *
  * Make sure the elements are continuous in the memory.
  */
-struct Vertex
-{
-    struct Position
-    {
+struct Vertex {
+    struct Position {
         float x, y, z;
         float* ptr() { return reinterpret_cast<float*>(this); }
     };
 
-    struct Color
-    {
+    struct Color {
         float r, g, b;
         float* ptr() { return reinterpret_cast<float*>(this); }
     };

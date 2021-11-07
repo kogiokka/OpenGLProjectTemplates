@@ -5,8 +5,7 @@
 
 namespace World
 {
-    struct Scene
-    {
+    struct Scene {
         std::vector<Vertex> triangle;
     };
 

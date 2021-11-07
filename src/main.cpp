@@ -34,8 +34,8 @@ int main(int argc, char* argv[])
     GLuint vbo = gl::Buffer::create();
 
     gl::Buffer::bind(GL_ARRAY_BUFFER, vbo);
-    gl::Buffer::data(
-        GL_ARRAY_BUFFER, state.scene->triangle.size() * sizeof(Vertex), state.scene->triangle.data(), GL_DYNAMIC_DRAW);
+    gl::Buffer::data(GL_ARRAY_BUFFER, state.scene->triangle.size() * sizeof(Vertex), state.scene->triangle.data(),
+                     GL_DYNAMIC_DRAW);
 
     using gl::VertexArray::Attrib;
 
@@ -57,19 +57,17 @@ int main(int argc, char* argv[])
     const glm::mat4 identityMat = glm::mat4(1.0f);
     const glm::mat4 modelMat = identityMat;
 
-    gl::Camera::Viewport = {0, 0, state.window->size.width, state.window->size.height};
+    gl::Camera::Viewport = { 0, 0, state.window->size.width, state.window->size.height };
 
     glm::vec3 position = glm::vec3(0.0f, 0.0f, 3.0f);
     glm::vec3 viewDir = glm::vec3(0.0f, 0.0f, -1.0f);
 
     UI::create();
 
-    while (!state.window->shouldClose)
-    {
+    while (!state.window->shouldClose) {
         sdl::Window::Event::poll();
 
-        for (auto it = std::cbegin(state.window->events); it != std::cend(state.window->events); it++)
-        {
+        for (auto it = std::cbegin(state.window->events); it != std::cend(state.window->events); it++) {
             UI::processEvent(*it);
             sdl::Window::Event::process(*it, UI::Var.WantCaptureEvent);
         }

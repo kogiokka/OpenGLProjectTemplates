@@ -6,10 +6,8 @@
 
 namespace sdl::Window
 {
-    struct OpenGLWindow
-    {
-        struct Size
-        {
+    struct OpenGLWindow {
+        struct Size {
             int width;
             int height;
         };

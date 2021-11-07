@@ -3,8 +3,7 @@
 #include "OpenGLWindow.hpp"
 #include "World.hpp"
 
-struct State
-{
+struct State {
     sdl::Window::OpenGLWindow* window;
     World::Scene* scene;
 };

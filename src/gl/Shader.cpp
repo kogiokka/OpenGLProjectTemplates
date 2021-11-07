@@ -17,15 +17,13 @@ namespace gl::Shader::Uniform
 
             static unordered_map<string, GLint> locations;
 
-            if (locations.find(uniformName) != locations.end())
-            {
+            if (locations.find(uniformName) != locations.end()) {
                 return locations[uniformName];
             }
 
             const GLchar* name = uniformName.c_str();
             int loc = glGetUniformLocation(programId, name);
-            if (loc == -1)
-            {
+            if (loc == -1) {
                 cerr << "[Error] Uniform \"" << uniformName << "\" does not exist." << endl;
             }
 
@@ -102,14 +100,11 @@ namespace gl::Shader
     void link(GLuint programId)
     {
         glLinkProgram(programId);
-        if (Param::linkStatus(programId) == GL_TRUE)
-        {
+        if (Param::linkStatus(programId) == GL_TRUE) {
             std::cout << "[Info] Linking Shader object(s) succeeded!" << std::endl;
             std::cout << "[Info] Number of attached shaders: " << Param::attachedShaders(programId) << std::endl;
             std::cout << "[Info] Number of active attributes: " << Param::activeAttributes(programId) << std::endl;
-        }
-        else
-        {
+        } else {
             std::cerr << "[Error] " << Param::programInfoLog(programId) << std::endl;
             glDeleteProgram(programId);
         }
@@ -123,8 +118,7 @@ namespace gl::Shader
         string source = "";
 
         file.open(filepath.data());
-        if (file.fail())
-        {
+        if (file.fail()) {
             cerr << "Failed to read shader file: \"" << filepath << "\"." << endl;
             return;
         }
@@ -137,18 +131,15 @@ namespace gl::Shader
 
     void attachSource(GLuint programId, Stage stage, const std::string& source)
     {
-        const char* const shaderSourceArray[1] = {source.c_str()};
+        const char* const shaderSourceArray[1] = { source.c_str() };
 
         GLuint shaderObject = glCreateShader(stage);
         glShaderSource(shaderObject, 1, shaderSourceArray, nullptr);
         glCompileShader(shaderObject);
 
-        if (Param::compileStatus(shaderObject) == GL_TRUE)
-        {
+        if (Param::compileStatus(shaderObject) == GL_TRUE) {
             glAttachShader(programId, shaderObject);
-        }
-        else
-        {
+        } else {
             std::cerr << "[Error] " << Param::shaderInfoLog(shaderObject) << std::endl;
         }
 

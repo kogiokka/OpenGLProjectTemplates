@@ -4,19 +4,16 @@
 
 namespace UI
 {
-    struct Var
-    {
+    struct Var {
         bool WantCaptureEvent = false;
         bool Window_NoBackground = false;
 
 #ifndef NDEBUG
-        struct DemoWindow
-        {
+        struct DemoWindow {
             bool Visible = false;
         } DemoWindow;
 #endif
-        struct VertexEditor
-        {
+        struct VertexEditor {
             bool Visible = false;
             int WindowFlags = 0;
         } VertexEditor;
