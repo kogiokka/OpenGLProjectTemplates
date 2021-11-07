@@ -131,7 +131,7 @@ void UI::VertexEditor::render()
 
 void UI::VertexEditor::VertexTab::render()
 {
-    auto& triangle = state.scene->triangle;
+    auto& triangle = state.world->triangle;
 
     if (ImGui::BeginTabItem("Position")) {
         for (std::size_t i = 0; i < triangle.size(); i++) {
@@ -150,7 +150,7 @@ void UI::VertexEditor::VertexTab::render()
 
 void UI::VertexEditor::ColorTab::render()
 {
-    auto& triangle = state.scene->triangle;
+    auto& triangle = state.world->triangle;
 
     if (ImGui::BeginTabItem("Color")) {
         for (std::size_t i = 0; i < triangle.size(); i++) {

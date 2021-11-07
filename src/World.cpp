@@ -1,26 +1,26 @@
 #include "World.hpp"
 
-World::Scene scene;
+World world;
 
-namespace World
+void World::create()
 {
-    void create()
-    {
-        scene.triangle = { {
-            Vertex {
-                { -0.5f, -0.5f, 0.0f },
-                { 1.0f, 0.0f, 0.0f },
-            },
-            Vertex {
-                { 0.5f, -0.5f, 0.0f },
-                { 0.0f, 1.0f, 0.0f },
-            },
-            Vertex {
-                { 0.0f, 0.5f, 0.0f },
-                { 0.0f, 0.0f, 1.0f },
-            },
-        } };
-    }
+    world.triangle = {
+        Vertex {
+            { -0.5f, -0.5f, 0.0f },
+            { 1.0f, 0.0f, 0.0f },
+        },
+        Vertex {
+            { 0.5f, -0.5f, 0.0f },
+            { 0.0f, 1.0f, 0.0f },
+        },
+        Vertex {
+            { 0.0f, 0.5f, 0.0f },
+            { 0.0f, 0.0f, 1.0f },
+        },
+    };
+}
 
-    void destroy() { scene.triangle.clear(); }
+void World::destroy()
+{
+    world.triangle.clear();
 }

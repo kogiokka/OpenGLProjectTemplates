@@ -15,27 +15,25 @@
 
 State state;
 
+void init();
+void update();
+void destroy();
+
 int main(int argc, char* argv[])
 {
-    sdl::Window::create("NTOU SDL2 Beginner Template", 1200, 800);
-    state.window = &window;
-
-    gladLoadGLLoader(SDL_GL_GetProcAddress);
+    init();
 
     std::cout << "OpenGL Version:        " << glGetString(GL_VERSION) << "\n"
               << "GLSL Version:          " << glGetString(GL_SHADING_LANGUAGE_VERSION) << "\n"
               << "Renderer:              " << glGetString(GL_RENDERER) << "\n"
               << "Vendor:                " << glGetString(GL_VENDOR) << std::endl;
 
-    World::create();
-    state.scene = &scene;
+    glEnable(GL_DEPTH_TEST);
+    // glEnable(GL_CULL_FACE);
 
     GLuint vao = gl::VertexArray::create();
     GLuint vbo = gl::Buffer::create();
-
-    gl::Buffer::bind(GL_ARRAY_BUFFER, vbo);
-    gl::Buffer::data(GL_ARRAY_BUFFER, state.scene->triangle.size() * sizeof(Vertex), state.scene->triangle.data(),
-                     GL_DYNAMIC_DRAW);
+    GLuint program = gl::Shader::create();
 
     using gl::VertexArray::Attrib;
 
@@ -44,12 +42,11 @@ int main(int argc, char* argv[])
     gl::VertexArray::enable(Attrib::Color);
 
     gl::Buffer::bind(GL_ARRAY_BUFFER, vbo);
+    gl::Buffer::data(GL_ARRAY_BUFFER, state.world->triangle.size() * sizeof(Vertex), state.world->triangle.data(),
+                     GL_DYNAMIC_DRAW);
     gl::VertexArray::pointer(Attrib::Position, 3, GL_FLOAT, GL_TRUE, sizeof(Vertex), offsetof(Vertex, position));
     gl::VertexArray::pointer(Attrib::Color, 3, GL_FLOAT, GL_TRUE, sizeof(Vertex), offsetof(Vertex, color));
 
-    glEnable(GL_DEPTH_TEST);
-    // glEnable(GL_CULL_FACE);
-    GLuint program = gl::Shader::create();
     gl::Shader::attach(program, gl::Shader::Stage::Vert, "shaders/default.vert");
     gl::Shader::attach(program, gl::Shader::Stage::Frag, "shaders/default.frag");
     gl::Shader::link(program);
@@ -62,15 +59,8 @@ int main(int argc, char* argv[])
     glm::vec3 position = glm::vec3(0.0f, 0.0f, 3.0f);
     glm::vec3 viewDir = glm::vec3(0.0f, 0.0f, -1.0f);
 
-    UI::create();
-
     while (!state.window->shouldClose) {
-        sdl::Window::Event::poll();
-
-        for (auto it = std::cbegin(state.window->events); it != std::cend(state.window->events); it++) {
-            UI::processEvent(*it);
-            sdl::Window::Event::process(*it, UI::Var.WantCaptureEvent);
-        }
+        update();
 
         gl::Camera::Viewport.width = state.window->size.width;
         gl::Camera::Viewport.height = state.window->size.height;
@@ -93,15 +83,38 @@ int main(int argc, char* argv[])
         sdl::Window::swap();
     }
 
-    World::destroy();
-    UI::destroy();
-
     gl::Shader::destroy(program);
     gl::Buffer::destroy(vbo);
     gl::VertexArray::destroy(vao);
-    sdl::Window::destroy();
-
-    SDL_Quit();
 
     return 0;
+}
+
+void init()
+{
+    state.window = &window;
+    state.world = &world;
+
+    sdl::Window::create("NTOU SDL2 Beginner Template", 1200, 800);
+    gladLoadGLLoader(SDL_GL_GetProcAddress);
+
+    UI::create();
+    World::create();
+}
+
+void update()
+{
+    sdl::Window::Event::poll();
+    for (auto it = std::cbegin(state.window->events); it != std::cend(state.window->events); it++) {
+        UI::processEvent(*it);
+        sdl::Window::Event::process(*it, UI::Var.WantCaptureEvent);
+    }
+}
+
+void destroy()
+{
+    World::destroy();
+    UI::destroy();
+
+    sdl::Window::destroy();
 }

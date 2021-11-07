@@ -1,4 +1,5 @@
 #include "sdl/OpenGLWindow.hpp"
+#include "State.hpp"
 
 #include <SDL.h>
 
@@ -140,12 +141,13 @@ namespace sdl::Window
 {
     void create(const std::string& title, int width, int height)
     {
-        window.size = { width, height };
-
         if (SDL_Init(SDL_INIT_VIDEO) != 0) {
             std::cerr << "SDL_Init Error: " << SDL_GetError() << std::endl;
+            SDL_Quit();
             std::exit(EXIT_FAILURE);
         }
+
+        window.size = { width, height };
 
         // OpenGL 3.3
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
@@ -172,6 +174,11 @@ namespace sdl::Window
         SDL_GL_SetSwapInterval(1);
     }
 
-    void destroy() { SDL_DestroyWindow(window.handle); }
+    void destroy()
+    {
+        SDL_DestroyWindow(window.handle);
+        SDL_Quit();
+    }
+
     void swap() { SDL_GL_SwapWindow(window.handle); }
 }

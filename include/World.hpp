@@ -3,14 +3,11 @@
 #include "gl/Vertex.hpp"
 #include <vector>
 
-namespace World
-{
-    struct Scene {
-        std::vector<Vertex> triangle;
-    };
+struct World {
+    std::vector<Vertex> triangle;
 
-    void create();
-    void destroy();
-}
+    static void create();
+    static void destroy();
+};
 
-extern World::Scene scene;
+extern World world;

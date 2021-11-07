@@ -5,7 +5,7 @@
 
 struct State {
     sdl::Window::OpenGLWindow* window;
-    World::Scene* scene;
+    World* world;
 };
 
 extern State state;
