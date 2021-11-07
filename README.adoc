@@ -1,0 +1,51 @@
+= NTOU OpenGL Example - Triangle
+
+// Settings
+:url-vcpkg: https://github.com/microsoft/vcpkg
+:url-vcpkg-readme: {url-vcpkg}/README.md
+
+An OpenGL template program for students learning Computer Graphics.
+
+== Prerequisites
+
+This program uses the following libraries: `SDL2`, `glm`, `Dear ImGui`, and `Glad`.
+
+Dear ImGui and Glad has been shipped with this project and placed inside `ext/` directory.
+`SDl2` and `glm` requires installation. We recommend {url-vcpkg}[`vcpkg`] for C++ package management.
+See {url-vcpkg}/README.md[Vcpkg's README.md] to get started.
+
+=== From Vcpkg
+
+==== Windows
+
+ $ vcpkg install sdl2 glm --triplet=x64-windows
+
+==== Linux / macOS
+
+ $ vcpkg install sdl2 glm
+
+=== From package manager (Linux)
+
+Ubuntu/Debian
+
+ $ sudo apt-get install libsdl2-dev libglm-dev
+
+Fedora/CentOS
+
+ $ sudo dnf install SDL2-devel glm-devel
+
+== Building
+
+=== Windows 
+
+The easiest way is to build with Visual Studio.
+Open the project folder and CMake will configure automatically.
+
+=== Linux / macOS
+
+Command-line
+
+ $ cmake -S <project-root> -B build/Debug \
+   -D CMAKE_BUILD_TYPE=<Debug|Release> \
+   -D CMAKE_TOOLCHAIN_FILE=<path-to-vcpkg-root>/scripts/buildsystems/vcpkg.cmake
+
