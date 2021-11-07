@@ -49,6 +49,9 @@ void UI::create()
     style.WindowRounding = 5.0f;
     style.FrameRounding = 3.0f;
     style.FrameBorderSize = 1.0f;
+
+    ImGuiIO& io = ImGui::GetIO();
+    io.Fonts->AddFontFromFileTTF("res/imgui/misc/fonts/DroidSans.ttf", 20);
 }
 
 void UI::render()

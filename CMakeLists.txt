@@ -178,6 +178,11 @@ add_custom_command(TARGET sdl2-example POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E create_symlink
         "${CMAKE_SOURCE_DIR}/shaders"
         "$<TARGET_FILE_DIR:sdl2-example>/shaders"
+    COMMAND ${CMAKE_COMMAND} -E make_directory
+        "$<TARGET_FILE_DIR:sdl2-example>/res/imgui/misc"
+    COMMAND ${CMAKE_COMMAND} -E create_symlink
+        "${CMAKE_SOURCE_DIR}/ext/imgui/misc/fonts"
+        "$<TARGET_FILE_DIR:sdl2-example>/res/imgui/misc/fonts"
     DEPENDS
         "${CMAKE_SOURCE_DIR}/shaders" # Make sure the directory exists
     COMMENT "Creating symlink from build tree to project resources..."
