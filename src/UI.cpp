@@ -9,7 +9,7 @@
 
 #include <string>
 
-namespace UI
+namespace ui
 {
     struct Var Var;
 
@@ -74,7 +74,7 @@ namespace UI
     }
 }
 
-void UI::create()
+void ui::create()
 {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -89,7 +89,7 @@ void UI::create()
     io.Fonts->AddFontFromFileTTF("res/imgui/misc/fonts/DroidSans.ttf", 18);
 }
 
-void UI::render()
+void ui::render()
 {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplSDL2_NewFrame(state.window->handle);
@@ -107,14 +107,16 @@ void UI::render()
         break;
     }
 
-    ::UI::MenuBar::render();
-    ::UI::Window::render();
+    ::ui::MenuBar::render();
+    ::ui::Window::render();
 
     ImGui::Render(); // End of new frame
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
-void UI::processEvent(const SDL_Event& e)
+void ui::destroy() { }
+
+void ui::Event::process(const SDL_Event& e)
 {
     ImGui_ImplSDL2_ProcessEvent(&e);
     const ImGuiIO& io = ImGui::GetIO();
@@ -122,19 +124,17 @@ void UI::processEvent(const SDL_Event& e)
     Var.WantCaptureEvent = io.WantCaptureKeyboard || io.WantCaptureMouse;
 }
 
-void UI::destroy() { }
-
-void UI::MenuBar::render()
+void ui::MenuBar::render()
 {
     if (ImGui::BeginMainMenuBar()) {
-        ::UI::MenuBar::Edit::render();
-        ::UI::MenuBar::View::render();
-        ::UI::MenuBar::Help::render();
+        ::ui::MenuBar::Edit::render();
+        ::ui::MenuBar::View::render();
+        ::ui::MenuBar::Help::render();
         ImGui::EndMainMenuBar();
     }
 }
 
-void UI::Window::render()
+void ui::Window::render()
 {
     Var.Window.VertexEditor.WindowFlags = 0;
     Var.Window.About.WindowFlags = ImGuiWindowFlags_NoResize;
@@ -143,34 +143,34 @@ void UI::Window::render()
         Var.Window.About.WindowFlags |= ImGuiWindowFlags_NoBackground;
     }
 
-    ::UI::Window::VertexEditor::render();
-    ::UI::Window::About::render();
+    ::ui::Window::VertexEditor::render();
+    ::ui::Window::About::render();
 
 #ifndef NDEBUG
-    ::UI::Window::Demo::render();
+    ::ui::Window::Demo::render();
 #endif
 }
 
-void UI::MenuBar::Edit::render()
+void ui::MenuBar::Edit::render()
 {
     if (ImGui::BeginMenu("Edit##menubar-edit")) {
-        ::UI::MenuBar::Edit::Preferences::render();
+        ::ui::MenuBar::Edit::Preferences::render();
         ImGui::EndMenu();
     }
 }
 
-void UI::MenuBar::Edit::Preferences::render()
+void ui::MenuBar::Edit::Preferences::render()
 {
     if (ImGui::BeginMenu("Preferences##menubar-edit-prefer")) {
         ImGui::MenuItem("Theme##menubar-edit-prefer-theme", nullptr, false, false);
         if (ImGui::MenuItem("Light", nullptr)) {
-            Var.Preferences.Theme = UI::Var::Preferences::Theme::Light;
+            Var.Preferences.Theme = ui::Var::Preferences::Theme::Light;
         };
         if (ImGui::MenuItem("Dark", nullptr)) {
-            Var.Preferences.Theme = UI::Var::Preferences::Theme::Dark;
+            Var.Preferences.Theme = ui::Var::Preferences::Theme::Dark;
         };
         if (ImGui::MenuItem("Classic", nullptr)) {
-            Var.Preferences.Theme = UI::Var::Preferences::Theme::Classic;
+            Var.Preferences.Theme = ui::Var::Preferences::Theme::Classic;
         };
         ImGui::Separator();
         ImGui::MenuItem("Window Options##menubar-edit-prefer-window_options", nullptr, false, false);
@@ -179,7 +179,7 @@ void UI::MenuBar::Edit::Preferences::render()
     }
 }
 
-void UI::MenuBar::View::render()
+void ui::MenuBar::View::render()
 {
     if (ImGui::BeginMenu("View##menubar-view")) {
         ImGui::MenuItem("Vertex Editor", nullptr, &Var.Window.VertexEditor.Visible);
@@ -187,7 +187,7 @@ void UI::MenuBar::View::render()
     }
 }
 
-void UI::MenuBar::Help::render()
+void ui::MenuBar::Help::render()
 {
     if (ImGui::BeginMenu("Help")) {
 #ifndef NDEBUG
@@ -202,7 +202,7 @@ void UI::MenuBar::Help::render()
     }
 }
 
-void UI::Window::VertexEditor::render()
+void ui::Window::VertexEditor::render()
 {
     if (!Var.Window.VertexEditor.Visible)
         return;
@@ -210,14 +210,14 @@ void UI::Window::VertexEditor::render()
     ImGui::SetNextWindowSize(ImVec2(350, 200), ImGuiCond_Once);
     ImGui::Begin("Vertex Editor", &Var.Window.VertexEditor.Visible, Var.Window.VertexEditor.WindowFlags);
     if (ImGui::BeginTabBar("TabBar##Window_VertexEditor")) {
-        ::UI::Window::VertexEditor::ColorTab::render();
-        ::UI::Window::VertexEditor::VertexTab::render();
+        ::ui::Window::VertexEditor::ColorTab::render();
+        ::ui::Window::VertexEditor::VertexTab::render();
         ImGui::EndTabBar();
     }
     ImGui::End();
 }
 
-void UI::Window::VertexEditor::VertexTab::render()
+void ui::Window::VertexEditor::VertexTab::render()
 {
     auto& triangle = state.world->triangle;
 
@@ -236,7 +236,7 @@ void UI::Window::VertexEditor::VertexTab::render()
     }
 }
 
-void UI::Window::VertexEditor::ColorTab::render()
+void ui::Window::VertexEditor::ColorTab::render()
 {
     auto& triangle = state.world->triangle;
 
@@ -255,7 +255,7 @@ void UI::Window::VertexEditor::ColorTab::render()
     }
 }
 
-void UI::Window::About::render()
+void ui::Window::About::render()
 {
     if (!Var.Window.About.Visible)
         return;
@@ -266,15 +266,15 @@ void UI::Window::About::render()
     ImGui::SetWindowFontScale(1.0f);
     ImGui::Text("Version %s", EXAMPLE_VERSION);
     if (ImGui::BeginTabBar("TabBar##Window_About")) {
-        ::UI::Window::About::AboutTab::render();
-        ::UI::Window::About::ComponentsTab::render();
-        ::UI::Window::About::AuthorsTab::render();
+        ::ui::Window::About::AboutTab::render();
+        ::ui::Window::About::ComponentsTab::render();
+        ::ui::Window::About::AuthorsTab::render();
         ImGui::EndTabBar();
     }
     ImGui::End();
 }
 
-void UI::Window::About::AboutTab::render()
+void ui::Window::About::AboutTab::render()
 {
     if (ImGui::BeginTabItem("About##About")) {
         ImGui::BeginChild("Child##AboutAbout", Var.Window.About.ChildSize, true);
@@ -289,7 +289,7 @@ void UI::Window::About::AboutTab::render()
     }
 }
 
-void UI::Window::About::ComponentsTab::render()
+void ui::Window::About::ComponentsTab::render()
 {
     if (ImGui::BeginTabItem("Components##About")) {
         ImGui::BeginChild("Child##AboutComponents", Var.Window.About.ChildSize, true);
@@ -307,7 +307,7 @@ void UI::Window::About::ComponentsTab::render()
     }
 }
 
-void UI::Window::About::AuthorsTab::render()
+void ui::Window::About::AuthorsTab::render()
 {
     if (ImGui::BeginTabItem("Authors##About")) {
         ImGui::BeginChild("Child##AboutAuthors", Var.Window.About.ChildSize, true);
@@ -318,7 +318,7 @@ void UI::Window::About::AuthorsTab::render()
 }
 
 #ifndef NDEBUG
-void UI::Window::Demo::render()
+void ui::Window::Demo::render()
 {
     if (!Var.Window.Demo.Visible)
         return;

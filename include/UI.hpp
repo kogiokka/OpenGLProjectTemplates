@@ -3,7 +3,7 @@
 #include "imgui.h"
 #include <SDL.h>
 
-namespace UI
+namespace ui
 {
     struct Var {
         bool WantCaptureEvent = false;
@@ -40,5 +40,8 @@ namespace UI
     void create();
     void destroy();
     void render();
-    void processEvent(const SDL_Event& event);
+
+    namespace Event {
+        void process(const SDL_Event& event);
+    }
 }

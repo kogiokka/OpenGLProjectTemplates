@@ -78,7 +78,7 @@ int main(int argc, char* argv[])
         gl::Shader::Uniform::matrix4fv(program, "viewProjMat", projMat * viewMat);
 
         glDrawArrays(GL_TRIANGLES, 0, 3);
-        UI::render();
+        ui::render();
 
         sdl::Window::swap();
     }
@@ -98,7 +98,7 @@ void init()
     sdl::Window::create("NTOU SDL2 Beginner Template", 1200, 800);
     gladLoadGLLoader(SDL_GL_GetProcAddress);
 
-    UI::create();
+    ui::create();
     World::create();
 }
 
@@ -106,15 +106,15 @@ void update()
 {
     sdl::Window::Event::poll();
     for (auto it = std::cbegin(state.window->events); it != std::cend(state.window->events); it++) {
-        UI::processEvent(*it);
-        sdl::Window::Event::process(*it, UI::Var.WantCaptureEvent);
+        ui::Event::process(*it);
+        sdl::Window::Event::process(*it, ui::Var.WantCaptureEvent);
     }
 }
 
 void destroy()
 {
     World::destroy();
-    UI::destroy();
+    ui::destroy();
 
     sdl::Window::destroy();
 }
