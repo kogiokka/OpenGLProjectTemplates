@@ -51,25 +51,32 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 endif()
 
 ## Set the compile options of targets according to the "build configuration".
+target_compile_options(triangle-example PRIVATE ${CompileOptions})
+
+## Add compile options ${CompileOptions_Debug} if CONFIG:Debug is true.
+target_compile_options(triangle-example PRIVATE $<$<CONFIG:Debug>:${CompileOptions_Debug}>)
+
+## Add compile options ${CompileOptions_Release} if CONFIG:Release is true.
+target_compile_options(triangle-example PRIVATE $<$<CONFIG:Release>:${CompileOptions_Release}>)
+
 #[[
+    A simplified explanation of generator expression
+
     $<CONFIG:Debug>
-        Evaluates to 1 if the build configuration is "Debug", or else it evaluates to 0.
+        This expression evaluates to 1 if the build configuration is "Debug", or else it evaluates to 0.
 
     $<1:Debug_Mode>
-        Expands to "Debug_Mode".
+        This expression expands to "Debug_Mode". ($<condition:true_string>)
 
-    $<0:DebugMode>
-        Expands to an empty string.
+    $<0:Debug_Mode>
+        This expression expands to an empty string.
 
     See details about generator-expressions at
         https://cmake.org/cmake/help/latest/manual/cmake-generator-expressions.7.html
 ]]
-target_compile_options(triangle-example PRIVATE ${CompileOptions})
-target_compile_options(triangle-example PRIVATE $<$<CONFIG:Debug>:${CompileOptions_Debug}>)
-target_compile_options(triangle-example PRIVATE $<$<CONFIG:Release>:${CompileOptions_Release}>)
-
 
 # Build Information ############################################################
+
 message(STATUS)
 message(STATUS "Build Information")
 message(STATUS "\tHost System Name:       ${CMAKE_HOST_SYSTEM_NAME}" )
@@ -101,12 +108,13 @@ endif()
 
 
 # Find External Libraries ######################################################
+
 find_package(OpenGL REQUIRED)
 find_package(SDL2 REQUIRED)
 find_package(glm REQUIRED)
 
-
 # Include Path #################################################################
+
 ## PUBLIC keyword make the libraries share their include directories property
 ## with their consumer.
 target_include_directories(imgui PUBLIC "ext/imgui")
@@ -117,13 +125,14 @@ target_include_directories(triangle-example PRIVATE
 )
 
 # Configure File ###############################################################
+
 ## Let CMake define PROJECT_VERSION in C++ code for us, so we don't have to edit
 ## multiple files when bumping version.
 configure_file(VERSION.hpp.in VERSION.hpp)
 target_include_directories(triangle-example PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")
 
-
 # Source Files #################################################################
+
 ## Collect source files and assign them to variables.
 file(GLOB GLAD_Source "ext/glad/src/glad.c")
 file(GLOB ImGui_Source CONFIGURE_DEPENDS
@@ -148,6 +157,7 @@ target_sources(triangle-example PRIVATE
 )
 
 # Link the Libraries ###########################################################
+
 ## GLAD use `dlopen` and `dlclose` functions in some environments. Link GLAD
 ## library with `CMAKE_DL_LIBS` and CMake will take care of it.
 target_link_libraries(glad PRIVATE ${CMAKE_DL_LIBS})
@@ -172,8 +182,8 @@ if (MINGW)
     add_definitions(-DSDL_MAIN_HANDLED)
 endif()
 
-
 # Create Symlink to Project Resources ###########################################
+
 #[[
     Create a symbolic link from build tree to the shaders in source tree, so the
     executable in build tree will be able to find them.
