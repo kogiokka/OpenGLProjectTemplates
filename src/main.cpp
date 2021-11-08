@@ -62,15 +62,11 @@ int main(int argc, char* argv[])
     while (!state.window->shouldClose) {
         update();
 
-        gl::Camera::Viewport.width = state.window->size.width;
-        gl::Camera::Viewport.height = state.window->size.height;
-
         const auto& [x, y, w, h] = gl::Camera::Viewport;
         const glm::vec3& clearColor = state.world->skyColor;
         glViewport(x, y, w, h);
         glClearColor(clearColor.r, clearColor.g, clearColor.b, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glBindVertexArray(vao);
 
         const glm::mat4 projMat = gl::Camera::perspective(glm::radians(45.0f), 0.01f, 100.0f);
         const glm::mat4 viewMat = gl::Camera::view(position, position + viewDir);
@@ -78,7 +74,7 @@ int main(int argc, char* argv[])
         gl::Shader::Uniform::matrix4fv(program, "modelMat", modelMat);
         gl::Shader::Uniform::matrix4fv(program, "viewProjMat", projMat * viewMat);
 
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawArrays(GL_TRIANGLES, 0, state.world->triangle->vertices.size());
         ui::render();
 
         sdl::Window::swap();
@@ -110,6 +106,9 @@ void update()
         ui::Event::process(*it);
         sdl::Window::Event::process(*it, ui::Var.WantCaptureEvent);
     }
+
+    gl::Camera::Viewport.width = state.window->size.width;
+    gl::Camera::Viewport.height = state.window->size.height;
 }
 
 void destroy()
