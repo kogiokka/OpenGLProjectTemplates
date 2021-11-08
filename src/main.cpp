@@ -41,9 +41,9 @@ int main(int argc, char* argv[])
     gl::VertexArray::enable(Attrib::Position);
     gl::VertexArray::enable(Attrib::Color);
 
-    const auto& verts = state.world->triangle->vertices;
     gl::Buffer::bind(GL_ARRAY_BUFFER, vbo);
-    gl::Buffer::data(GL_ARRAY_BUFFER, verts.size() * sizeof(Vertex), verts.data(), GL_DYNAMIC_DRAW);
+    gl::Buffer::data(GL_ARRAY_BUFFER, state.world->triangle->count() * sizeof(Vertex), state.world->triangle->data(),
+                     GL_DYNAMIC_DRAW);
     gl::VertexArray::pointer(Attrib::Position, 3, GL_FLOAT, GL_TRUE, sizeof(Vertex), offsetof(Vertex, position));
     gl::VertexArray::pointer(Attrib::Color, 3, GL_FLOAT, GL_TRUE, sizeof(Vertex), offsetof(Vertex, color));
 
@@ -74,7 +74,7 @@ int main(int argc, char* argv[])
         gl::Shader::Uniform::matrix4fv(program, "modelMat", modelMat);
         gl::Shader::Uniform::matrix4fv(program, "viewProjMat", projMat * viewMat);
 
-        glDrawArrays(GL_TRIANGLES, 0, state.world->triangle->vertices.size());
+        glDrawArrays(GL_TRIANGLES, 0, state.world->triangle->count());
         ui::render();
 
         sdl::Window::swap();

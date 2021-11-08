@@ -5,7 +5,8 @@ World world;
 
 void World::create()
 {
-    world.triangle = new Triangle {
+    world.triangle = new Triangle {};
+    world.triangle->vertices = {
         Vertex {
             { -0.5f, -0.5f, 0.0f },
             { 1.0f, 0.0f, 0.0f },

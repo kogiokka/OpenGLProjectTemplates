@@ -7,6 +7,8 @@
 
 struct Triangle {
     std::array<Vertex, 3> vertices;
+    unsigned int count() { return vertices.size(); }
+    Vertex* data() { return vertices.data(); }
 };
 
 struct World {
