@@ -311,9 +311,9 @@ void ui::Window::About::ComponentsTab::render()
         ImGui::Text(" ");
         ImGui::Separator();
         ImGui::Text("GLM\n"
-                    "Version %d.%d.%d\n"
+                    "Version %d.%d.%d.%d\n"
                     "https://github.com/g-truc/glm\n",
-                    GLM_VERSION_MAJOR, GLM_VERSION_MINOR, GLM_VERSION_PATCH);
+                    GLM_VERSION_MAJOR, GLM_VERSION_MINOR, GLM_VERSION_PATCH, GLM_VERSION_REVISION);
         ImGui::Text(" ");
         ImGui::Separator();
         ImGui::Text("Glad\n"
