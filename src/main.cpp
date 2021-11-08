@@ -87,6 +87,7 @@ int main(int argc, char* argv[])
     gl::Shader::destroy(program);
     gl::Buffer::destroy(vbo);
     gl::VertexArray::destroy(vao);
+    destroy();
 
     return 0;
 }
