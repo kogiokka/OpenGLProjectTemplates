@@ -1,8 +1,20 @@
 = NTOU OpenGL Template - Triangle
-
 // Settings
+ifndef::env-github[:icons: font]
+ifdef::env-github[]
+
+:caution-caption: :fire:
+:important-caption: :exclamation:
+:note-caption: :paperclip:
+:tip-caption: :bulb:
+:warning-caption: :warning:
+endif::[]
+
+// URLs
 :url-vcpkg: https://github.com/microsoft/vcpkg
-:url-vcpkg-readme: {url-vcpkg}/blob/master/README.md
+:url-vcpkg-file: {url-vcpkg}/blob/HEAD
+:url-vcpkg-tree: {url-vcpkg}/tree/HEAD
+:url-vcpkg-readme: {url-vcpkg-file}/README.md
 
 An OpenGL template program for students learning Computer Graphics.
 
@@ -38,14 +50,19 @@ Fedora/CentOS
 
 === Windows 
 
-The easiest way is to build with Visual Studio.
-Open the project folder and CMake will configure automatically.
+[CAUTION]
+====
+Enable Developer Mode on Windows for CMake to create symbolic links.
+====
+
+The easiest way is to build with Visual Studio 2019 and above.
+Open the project folder and CMake will configure the project automatically.
 
 === Linux / macOS
 
 Command-line
 
- $ cmake -S <project-root> -B build/Debug \
-   -D CMAKE_BUILD_TYPE=<Debug|Release> \
-   -D CMAKE_TOOLCHAIN_FILE=<path-to-vcpkg-root>/scripts/buildsystems/vcpkg.cmake
-
+ $ cmake -S <project-root> \
+         -B build/<Debug|Release> \
+         -D CMAKE_BUILD_TYPE=<Debug|Release> \
+         -D CMAKE_TOOLCHAIN_FILE=<path-to-vcpkg-root>/scripts/buildsystems/vcpkg.cmake
