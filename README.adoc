@@ -20,7 +20,12 @@ An OpenGL template program for students learning Computer Graphics.
 
 == Prerequisites
 
-This program uses the following libraries: `SDL2`, `glm`, `Dear ImGui`, and `Glad`.
+This program uses the following libraries:
+
+ * `SDL2`
+ * `glm>=0.9.9.7`
+ * `Dear ImGui`
+ * `Glad`
 
 Dear ImGui and Glad has been shipped with this project and placed inside `ext/` (as **ext**ernal libraries) directory.
 SDL2 and glm requires installation. We recommend {url-vcpkg}[`vcpkg`] for C++ package management.
