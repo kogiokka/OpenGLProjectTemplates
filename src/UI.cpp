@@ -1,7 +1,7 @@
 #include "VERSION.hpp"
 
-#include "UI.hpp"
 #include "State.hpp"
+#include "UI.hpp"
 #include "gl/Buffer.hpp"
 
 #include <glad/glad.h>

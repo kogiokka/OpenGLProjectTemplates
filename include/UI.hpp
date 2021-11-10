@@ -1,7 +1,7 @@
 #pragma once
 
-#include <imgui.h>
 #include <SDL.h>
+#include <imgui.h>
 
 namespace ui
 {
@@ -11,7 +11,7 @@ namespace ui
 
         struct Window {
             struct VertexEditor {
-                bool Visible = false;
+                bool Visible = true;
                 int WindowFlags = 0;
             } VertexEditor;
             struct About {
@@ -41,7 +41,8 @@ namespace ui
     void destroy();
     void render();
 
-    namespace Event {
+    namespace Event
+    {
         void process(const SDL_Event& event);
     }
 }
