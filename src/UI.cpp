@@ -88,7 +88,7 @@ void ui::create()
     style.FrameBorderSize = 1.0f;
 
     ImGuiIO& io = ImGui::GetIO();
-    io.Fonts->AddFontFromFileTTF("res/imgui/misc/fonts/DroidSans.ttf", 18);
+    io.Fonts->AddFontFromFileTTF("res/fonts/DroidSans.ttf", 18);
 }
 
 void ui::render()

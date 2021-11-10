@@ -194,11 +194,9 @@ add_custom_command(TARGET triangle-example POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E create_symlink
         "${CMAKE_SOURCE_DIR}/shaders"
         "$<TARGET_FILE_DIR:triangle-example>/shaders"
-    COMMAND ${CMAKE_COMMAND} -E make_directory
-        "$<TARGET_FILE_DIR:triangle-example>/res/imgui/misc"
     COMMAND ${CMAKE_COMMAND} -E create_symlink
-        "${CMAKE_SOURCE_DIR}/ext/imgui/misc/fonts"
-        "$<TARGET_FILE_DIR:triangle-example>/res/imgui/misc/fonts"
+        "${CMAKE_SOURCE_DIR}/res"
+        "$<TARGET_FILE_DIR:triangle-example>/res"
     DEPENDS
         "${CMAKE_SOURCE_DIR}/shaders" # Make sure the directory exists
     COMMENT "Creating symlink from build tree to project resources..."
