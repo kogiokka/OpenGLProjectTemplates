@@ -185,21 +185,24 @@ endif()
 # Create Symlink to Project Resources ###########################################
 
 #[[
-    Create a symbolic link from build tree to the shaders in source tree, so the
-    executable in build tree will be able to find them.
+    The program needs to load some resources at runtime (ex. shaders). We create
+    symbolic links from the directory containing the executable in the build tree
+    to resources in the current source tree.
 
     NOTICE: Enable Developer Mode on MS Windows to create symbolic links.
 ]]
 add_custom_command(TARGET triangle-example POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E create_symlink
-        "${CMAKE_SOURCE_DIR}/shaders"
+        "${CMAKE_CURRENT_SOURCE_DIR}/shaders"
         "$<TARGET_FILE_DIR:triangle-example>/shaders"
     COMMAND ${CMAKE_COMMAND} -E create_symlink
-        "${CMAKE_SOURCE_DIR}/res"
+        "${CMAKE_CURRENT_SOURCE_DIR}/res"
         "$<TARGET_FILE_DIR:triangle-example>/res"
     DEPENDS
-        "${CMAKE_SOURCE_DIR}/shaders" # Make sure the directory exists
-    COMMENT "Creating symlink from build tree to project resources..."
+        # Make sure the directories exist
+        "${CMAKE_CURRENT_SOURCE_DIR}/shaders"
+        "${CMAKE_CURRENT_SOURCE_DIR}/res"
+    COMMENT "Creating symlinks to project resources..."
     VERBATIM
 )
 
