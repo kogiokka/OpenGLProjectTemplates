@@ -19,7 +19,12 @@ void init();
 void update();
 void destroy();
 
-int main(int argc, char* argv[])
+/* Main function
+ *
+ * SDL2 requires the main function to be in the two-parameters form on MS Windows.
+ * Use "maybe_unused" C++ attribute to suppress warnings on unused parameters.
+ */
+int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[])
 {
     init();
 
