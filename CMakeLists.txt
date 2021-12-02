@@ -169,17 +169,25 @@ target_link_libraries(triangle-example PRIVATE
     OpenGL::GL
 )
 
+# Using C++ filesystem library may require additional compiler options.
+# GNU implementation prior to 9.1 requires linking with -lstdc++fs and LLVM
+# implementation prior to LLVM 9.0 requires linking with -lc++fs.
+#
+# https://en.cppreference.com/w/cpp/filesystem#Notes
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 9)
+    if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 9.1)
         target_link_libraries(triangle-example PRIVATE stdc++fs) # C++ filesystem
+    endif()
+    if (MINGW)
+        # https://github.com/msys2/MINGW-packages/issues/6380
+        add_definitions(-DSDL_MAIN_HANDLED)
+    endif()
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 9.0)
+        target_link_libraries(triangle-example PRIVATE c++fs) # C++ filesystem
     endif()
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     target_link_libraries(triangle-example PRIVATE SDL2::SDL2main)
-endif()
-
-if (MINGW)
-    # https://github.com/msys2/MINGW-packages/issues/6380
-    add_definitions(-DSDL_MAIN_HANDLED)
 endif()
 
 # Create Symlink to Project Resources ###########################################
