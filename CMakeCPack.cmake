@@ -19,6 +19,8 @@ list(APPEND IgnoreFiles
     "CMakeLists.txt.user.*"
     ".*.kdev4"
     ".kdev4/"
+    ".vscode"
+    ".idea"
 
     # Files specific to version control.
     ".git/"
